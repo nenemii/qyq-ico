@@ -1,0 +1,69 @@
+.content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 0;
+  position: relative;
+  background: transparent;
+}
+
+.profile{
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 6px solid rgba(255,255,255,0.06);
+  box-shadow: 0 0 0 12px rgba(209, 150, 66, 0.08), 0 10px 30px rgba(134, 71, 16, 0.6), 0 0 40px rgba(219, 171, 15, 0.08) inset;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile:hover{
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 0 0 16px rgba(63, 26, 10, 0.12), 0 18px 40px rgba(0,0,0,0.6);
+}
+
+.avatarGlow{
+  position: relative;
+  display: inline-block;
+  border-radius: 50%;
+  padding: 12px;
+}
+
+.avatarGlow::before{
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(90,160,255,0.08), rgba(20,30,40,0));
+  z-index: -1;
+  filter: blur(18px);
+}
+
+.name{
+  margin-top: 20px;
+  font-size: 28px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.tags{
+  margin-top: 18px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tag{
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(90, 51, 51, 0.88);
+  padding: 6px 12px;
+  border-radius: 18px;
+  font-size: 13px;
+}
