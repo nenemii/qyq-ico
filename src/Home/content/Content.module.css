@@ -1,0 +1,105 @@
+.container {
+  color: #eeeeee;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: normal;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  text-align: left;
+}
+
+.iconGroup {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  text-align: left;
+}
+
+.iconWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.iconWrap:hover {
+  transform: translateY(-7px);
+}
+
+.techIcon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.iconLabel {
+  font-size: 0.85rem;
+  color: #a0a0a0;
+  font-weight: 500;
+}
+
+.iconPlaceholder {
+  /* 暂时代替图标的文字样式 */
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #a0a0a0;
+}
+
+.tagGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  text-align: left;
+  
+}
+
+.tag {
+  padding: 0.4rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: default;
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  border-color: rgba(138, 58, 9, 0.8);
+  color: #ffffff;
+}
+
+.navGroup{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  text-align: left;
+}
+
+.nav {
+  padding: 1rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+  font-size: 1rem;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: default;
+  transition: all 0.2s ease;
+}
+
+.nav:hover {
+  border-color: rgba(5, 2, 0, 0.791);
+  color: #ffffff;
+  transform: scale(1.15);
+  cursor: pointer;
+}

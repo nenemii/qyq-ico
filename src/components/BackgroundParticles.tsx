@@ -68,8 +68,8 @@ const BackgroundParticles: React.FC = () => {
         const dy = mouseRef.current.y - star.y;
         // 更新位置
 
-          star.x += dx*0.0002;
-          star.y += dy*0.0002;
+          star.x += dx*0.00025;
+          star.y += dy*0.00025;
 
         
 
@@ -95,7 +95,7 @@ const BackgroundParticles: React.FC = () => {
         // 绘制星星
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(1, 1, 1,${star.opacity})`;
+        ctx.fillStyle = `rgba(8, 15, 50,${star.opacity})`;
         
         // 增加些许光晕效果
         if (star.size > 1.2) {

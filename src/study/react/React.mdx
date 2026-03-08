@@ -1,0 +1,1040 @@
+# React八股
+
+## 1. 你真的了解 React 吗
+
+![Q1. 你真的了解 React 吗](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0a03e509dddf43b7bb6763e2236b90cc~tplv-k3u1fbpfcp-jj-mark:3024:0:0:0:q75.jpg#?w=667&h=313&s=25909&e=png&b=f6f6f6)
+
+###  答题
+
+> React 是一个用于构建 UI 用户界面的 JS 库。
+> 通过组件化的方式解决了视图层开发复用的问题，本质上是一个组件化的框架。
+>
+> 它的核心设计思路有三点，分别是声明式，组件化和通用性。
+>
+> > 1. 声明式的优势在于直观与方便组合；
+> > 2. 组件化的优势在于视图的拆分和模块复用，更容易做到高内聚低耦合；
+> > 3. 通用性在于一次学习，随处编写，比如在 React Native，React 360 等；
+>
+> > - 优点：React 的通用性优势，归功于它使用了虚拟 DOM，这使得 React 的适用范围变得更加广阔，无论 Web、Native、VR，甚至是 Shell 应用都能灵活开发。
+> > - 缺点：作为一个视图层的框架，官方并不提供一揽子的解决方案，而是交给社区去实现，比如路由管理方案 React Router，全局状态管理方案 Redux，这样增加了技术选型的成本，以及对初学者上手难度上造成一定的干扰。
+>
+> 不可否认的是，Facebook 以拥抱社区、拥抱开源的方式，促进了 React 生态的繁荣。
+
+面试官您好，React 是一个用于构建 UI 用户界面的 JS 库，核心特点是**声明式编程**和**组件化思想**—— 声明式让我只需关注 UI 应该呈现的状态，而非手动操作 DOM，React 会自动处理 DOM 更新；组件化则将页面拆分为独立、可复用的组件，比如按钮、表单、列表等，大幅提升代码复用性和维护性。React 的核心原理是**虚拟 DOM** 和 **Diff 算法**，react使用 **单向数据流** 让数据从父组件流向子组件，状态管理更清晰，配合 Hooks（如 useState、useEffect）可以在函数组件中管理状态和处理副作用，替代了传统的类组件，让代码更简洁。此外，React 还支持跨端开发（React Native），生态丰富（如 React Router 做路由、Redux/Zustand 做状态管理），是目前前端开发中最主流的框架之一，我在项目中常用 React 开发中后台系统和移动端 H5，熟练使用 Hooks 封装自定义逻辑、处理组件通信和性能优化。
+
+## 2. 为什么 React 要使用 JSX
+
+![Q2. 为什么 React 要使用 JSX](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f994e56941064346a1e6e11fea2448c9~tplv-k3u1fbpfcp-jj-mark:3024:0:0:0:q75.jpg#?w=817&h=341&s=29487&e=png&b=f6f6f6)
+
+### 答题
+
+> 我先解释一下什么是 JSX。JSX 是一个 JavaScript 的语法扩展，结构类似 XML。
+>
+> > JSX 主要用于声明 React 元素，但 React 中并不强制使用 JSX。即使使用了 JSX，也会在打包构建过程中，使用 Babel 插件编译为 React.createElement。所以 JSX 更像是 React.createElement 的语法糖。 所以从这里可以看出，React 团队并不想引入 Javascript 以外的开发体系。而是希望通过合理的关注点分离保持组件开发的的纯粹性。
+>
+> 接下来与 JSX 以外的三种技术方案进行对比。
+>
+> > 1. 模板，React 团队认为模板不应该是开发过程中的关注点，会引入模板语法，模板指令等概念，这是一种不佳的实现方案。
+> > 2. 模板字符串，模板字符串编写的结构会造成多次内部嵌套，使整个结构变得复杂，并且优化代码提示也会变得困难重重。
+> > 3. JXON，同样是因为代码提示困难被放弃
+>
+> 所以 React 最后选用了 JSX，是因为 JSX 与其设计思想贴合，不需要引入过多的新概念，对编辑器的代码提示也极为友好。
+
+## React事件机制
+
+充当浏览器原生事件的跨浏览器包装器 的对象
+
+将不同浏览器行为组合到一个 API中，确保事件显示一致的 属性
+
+**React 事件机制**
+
+```jsx
+< div onClick ={this.handleClick.bind(this)}> 
+    点我 
+< /div >
+```
+
+React不是将click事件绑定到了真实DOM上，而是在document处监听了所有的事件，当事件发生并且冒泡到document处的时候，React将事件内容封装并交由真正的处理函数运行。
+
+这样可以 减少内存消耗，还能在组件挂载销毁时统一订阅和移除事件
+
+冒泡到document上的事件也不是原生浏览器事件，而是由react自己实现的合成事件（SyntheticEvent）。
+
+如果不想要事件冒泡的话应调用event.preventDefault()方法，而不是调用event.stopProppagation()方法
+
+![image-20260218214142568](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20260218214142568.png)
+
+合成事件的目的如下：
+
+- 合成事件抹平了浏览器间的兼容问题，这是一个跨浏览器原生事件包装器，赋予了跨浏览器开发的能力
+- 对于原生浏览器事件来说，浏览器会给监听器创建一个事件对象。如果你有很多的事件监听，就需要分配很多的事件对象，造成高额内存分配问题。但是对于合成事件来说，有一个事件池专门来管理它们的创建和销毁，当事件需要被使用时，会从池子中复用对象，事件回调结束后，销毁事件对象上的属性，便于复用
+
+## React引入CSS的方式
+
+- 内联样式，组件内直接使用： 通过`style`属性直接引入
+- 组件中引入`.CSS` 文件， 全局生效，样式之间互相影响
+- css in js： 第三方库支持
+- 引入`.module.css` 文件
+
+## 3.讲一讲React的渲染流程
+
+React的渲染流程主要分为两个阶段，一个render阶段，一个commit阶段。
+
+ render阶段是生成虚拟DOM的阶段，commit的作用是渲染UI。 
+
+如果再划分的详细一下，可以分为三个主要函数，render阶段的调度器Scheduler和协调器Reconciler和commit阶段的Renderer。 调度器Scheduler是用来调度任务的，根据任务的优先级，判断哪个任务进入协调器Reconciler中。 协调器Reconciler函数会生成新的Fiber对象，diff算法就是发生在这个阶段，并在这个过程中收集副作用，收集要修改的DOM元素。最后commit阶段的Renderer函数负责对上阶段收集的DOM元素进行执行真实的DOM操作，并执行副作用。
+
+## 4.讲一讲React的diff算法
+
+React的diff算法发生在协调器Reconciler阶段，这个阶段是要生成新的Fiber Tree， diff算法的目标是最小的代价比较新旧DOM的差别，从而决定要更新那些DOM。
+
+React的虚拟DOM使用了双缓冲，也就是两颗虚拟DOM共存的状态，diff算法是通过将JSX和current Fiber Tree 进行比较，然后生成WorkInProgress Fiber Tree，这个过程的核心就是如何提高效率，也就是如何能更好的复用。
+
+同时引入key也是优化了diff算法，当同层进行diff的时候，如果仅仅是做了交换，如果没有key的引入，当逐个比较的时候，会先销毁再创建，但是有了key的引入，就会可以查找到相同的DOM直接拿来复用，这样避免了销毁和重建的过程。
+
+#### 1. 为什么不建议用数组索引（index）作为 key？
+
+**问题**：在渲染列表时，如果我没有 key，React 会默认使用索引作为 key，这有什么问题？
+
+**回答**：
+
+这是一个非常危险的做法，会导致严重的性能问题和状态错乱，主要有两点原因：
+
+1. 破坏了 Diff 算法的复用逻辑：
+   - 当列表顺序发生变化（如排序、插入、删除）时，每个元素的 `index` 都会改变。
+   - React 会认为 `index=0` 的元素变成了新的内容，从而执行不必要的销毁和重建，而不是复用。
+   - 例如：列表 `[A, B, C]` 前面插入一个元素 `D`，变成 `[D, A, B, C]`。如果用 `index` 作为 key，React 会认为原来的 A（index=0）现在变成了 D，导致 A、B、C 全部重新渲染。
+2. 导致组件状态丢失或错乱：
+   - 如果列表项组件内部维护了 state（如输入框的值、勾选状态），当 `index` 变化时，React 会复用旧的组件实例，但绑定到了新的数据上，导致状态和数据不匹配。
+
+**结论**：永远使用稳定、唯一、与数据绑定的 ID 作为 key，而不是索引。
+
+------
+
+#### 2. 为什么 Diff 算法只进行同层比较？跨层级移动节点会发生什么？
+
+**问题**：如果我把一个 `<div>` 从父组件的顶部移动到底部，React 会怎么处理？
+
+**回答**：React 为了性能，做了一个重要的假设：**DOM 结构的跨层级移动是极其罕见的**。因此 Diff 算法只进行同层比较。
+
+- 如果一个节点在旧树中位于 A 层级，在新树中位于 B 层级，即使它的 `type` 和内容完全一样，React 也不会去其他层级查找复用。
+- 它会直接销毁旧树中 A 层级的节点及其所有子节点，然后在新树的 B 层级创建一个全新的节点。
+- 这会导致非常昂贵的 DOM 操作。因此，在开发中应尽量避免跨层级的 DOM 结构变化，或者使用 CSS（如 `transform`）来实现视觉上的移动，而不是改变 DOM 树的结构。
+
+**Render 阶段如何判断两个节点是否相等，是否需要重新渲染**
+
+- 判断节点相等：React 会先比较两个节点的  type  和  key 。如果  type  不同，或者  key  不同，则认为是不同的节点，直接销毁旧节点并创建新节点。
+
+- 判断是否需要重新渲染：对于相同类型的节点，React 会比较  props  和  state 。如果  props  和  state  没有变化（浅比较），则会跳过该节点的渲染，复用之前的 Fiber 节
+
+------
+
+#### 3. 当新旧节点的 type 不同时，React 会做什么？
+
+**问题**：如果我把一个 `<div>` 动态替换成了 `<p>`，React 会更新它的标签名，还是重建整个节点？
+
+**回答**：React 会直接销毁旧节点，创建新节点。
+
+- React 认为不同 `type` 的节点是完全不同的组件。
+- 当它发现新旧节点的 `type` 不同时，会立即停止对该节点及其子树的 Diff 过程，标记整个旧子树为 “需要删除”，并创建一个全新的子树。
+- 这是为了保证组件的一致性和可预测性，避免因组件内部状态不同导致的不可预期行为。
+
+------
+
+#### 4. key 必须是全局唯一的吗？
+
+**问题**：我在两个不同的列表中使用了相同的 key，会有问题吗？
+
+**回答**：不需要全局唯一，只需要在**同一父节点下的兄弟节点之间唯一**即可。
+
+- React 的 Diff 算法是在同一层级、同一父节点下进行的。
+- 只要保证在同一个 `<ul>` 下的所有 `<li>` 的 key 不重复，React 就能正确地进行复用和 Diff。
+- 不同父节点下的节点，即使 key 相同，也不会互相干扰。
+
+------
+
+#### 5. 什么情况下 Diff 算法会失效或性能变差？
+
+**回答**：主要有以下几种情况：
+
+1. **使用不稳定的 key**：如 `key={Math.random()}` 或 `key={new Date()}`。每次渲染 key 都变化，导致 React 每次都销毁重建所有列表项，性能极差。
+2. **深层嵌套的组件树**：虽然 Diff 是 O (n)，但 n 是所有节点的数量。如果组件树嵌套过深，且频繁更新，仍然会有性能压力。
+3. **大量无 key 或用 index 作为 key 的列表**：如前所述，这会导致大量不必要的重渲染。
+4. **频繁的跨层级 DOM 结构变化**：导致 React 销毁重建大量节点。
+
+### 与其他框架相比，React 的 Diff 算法有何不同
+
+###  破题
+
+> 考察面试者对 React Diff 算法的理解程度，同时需要面试者技术视野广泛，结合社区其他框架的 Diff 方案做比较。
+
+###  承题
+
+![mind map](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e4d8296964e2415bbbf7d9f1e44d93ee~tplv-k3u1fbpfcp-jj-mark:3024:0:0:0:q75.jpg#?w=1223&h=593&s=60273&e=png&b=f6f6f6)
+
+### 答题
+
+> 首先，Diff 算法是指生成更新补丁的方式，主要应用于虚拟 DOM 树变化后，更新真实 DOM。因此 Diff 算法一定存在这样一个过程：触发更新 -> 生成补丁 -> 应用补丁。
+>
+> React diff 算法触发更新的时机主要在 setState 变化和 hooks 调用之后，此时，触发虚拟 DOM 树变更遍历，React 采用深度优先遍历算法，但传统的遍历方式，效率较低，复杂度为 O(n^3)。为了提升效率， React 采用计算机科学中的「分治」这一经典的手法，分而治之的巧妙分解问题，将单一节点对比，转化为 3 种类型节点的对比，对应 diff 的三种优化策略：
+>
+> 1. 树对比：只对同一层级节点进行比较
+> 2. 组件对比：同类型组件才会对比，否则直接放入 patch
+> 3. 元素对比：同层级节点中，通过设置 key 标记优化对比效率
+>
+> 自从 React v16 引入 Fiber 架构之后，为了使整个更新过程可以随时暂停恢复，节点与树分别采用了 FiberNode 和 FiberTree 进行重构，其中 FiberNode 使用了双链表结构，可以直接找到兄弟节点和子节点。整个更新过程由 current 和 workProgress 两株树双缓冲完成。
+>
+> 社区中的其他优秀框架 Diff 算法的区别：
+>
+> - Preact 整体设计思路相似，但是底层元素采用了真实 DOM 对比操作，未采用 Fiber 设计。
+> - Vue 2.0 和 3.0 整体设计思路与 React 一致，依然未引入 Fiber 架构。 横向比较
+> - React 拥有完整的 Diff 算法策略，且拥有随时中断更新的时间切片能力，在大批量节点更新的极端情况下，拥有更友好的交互体验。
+> - Preact 可以在一些对性能要求不高，仅需要渲染框架的简单场景下应用。
+> - Vue 的整体 diff 策略与 React 对齐，虽然缺乏时间切片的能力，但并不意味着 Vue 的性能更差，在 Vue 3 初期引入过，后期因为收益不高被移除掉了，除了高帧率动画，在 Vue 中其他场景几乎都可以使用防抖和节流去提高响应能力。
+
+Tips: 在面试过程中，切忌踩一捧一，容易引发面试官的反感。
+
+###  延伸
+
+> 那么基于 React Diff 算法的原理，在开发中如何优化代码呢？
+
+1. 尽量避免跨层级节点移动
+2. 设置唯一的 key 值进行优化
+3. 尽量减少组件的层级深度，从而降低树遍历的深度
+4. 设置 shouldComponent 或者使用 React.PureComponent 减少 diff 次数
+
+## 讲一讲React 的虚拟DOM
+
+虚拟 DOM 本质上就是一个用来描述真实 DOM 结构的**普通 JavaScript 对象**，我们写的 JSX 最终会被编译成 React.createElement，返回的就是虚拟 DOM。
+
+它最核心的作用，就是**避免直接频繁操作真实 DOM**。说到这个方面，我想先说一下为什么频繁地DOM操作为什么性能差（图片）
+
+因为真实 DOM 的创建、更新、回流重绘成本非常高，一点点操作都可能触发页面重新渲染，而虚拟 DOM 只是 JS 对象，操作起来非常快。
+
+React 的工作方式就是：先通过 setState 或 props 变化生成新的虚拟 DOM 树，然后用 Diff 算法和旧的虚拟 DOM 做对比，只找出真正变化的部分，最后**最小量、批量地更新真实 DOM**，而不是整个页面重新渲染。这样就极大提升了更新效率。
+
+同时，虚拟 DOM 还有一个好处，就是**跨平台**。因为它不依赖浏览器环境，只要对应平台能实现渲染层，就可以把虚拟 DOM 渲染成小程序、原生 App、桌面端等，这也是 React、React Native 能跨端的核心基础。
+
+简单说，虚拟 DOM 就是 React 用来**做缓冲、做对比、做优化、做跨平台**的核心中间层
+
+![image-20260303131016547](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20260303131016547.png)
+
+## React的生命周期
+
+在 React 中，生命周期描述了组件从创建、渲染、更新到卸载的整个过程。
+
+React 的生命周期主要分为**类组件生命周期**和**函数组件生命周期（基于 Hooks）** 两部分
+
+### 类组件的生命周期（经典模式）
+
+类组件的生命周期可分为 3 个核心阶段：**挂载（Mounting）**、**更新（Updating）**、**卸载（Unmounting）**，另有一个特殊的**错误处理阶段**。
+
+#### 1. 挂载阶段（组件从创建到插入 DOM）
+
+组件首次被创建并渲染到页面的过程，只执行一次。
+
+包含 4 个方法，执行顺序如下：
+
+- **constructor(props)**
+
+  组件初始化时调用，用于：
+
+  ① 初始化 state（`this.state = {...}`）；② 绑定事件处理函数（避免每次渲染创建新函数）。
+
+  注意：不要在这里调用`setState`(组件还没有挂载到dom)，也不要在这里发请求（可能导致不必要的重复执行）。
+
+- **static getDerivedStateFromProps(props, state)**
+
+  静态方法，在**挂载和更新阶段**都会被调用。作用是根据 props 动态更新 state（如 “props 变化时强制同步 state”）。
+
+  返回值：新的 state 对象（`{...}`）或`null`（不更新 state）。
+
+  注意：此方法无`this`，纯函数逻辑，避免在这里处理副作用（如发请求）。
+
+- **render()**
+
+  核心方法，用于返回 JSX（描述 UI 结构）。
+
+  注意：① 必须是纯函数（不修改 state、不触发副作用）；② 若返回`null`/`false`，表示不渲染任何内容。
+
+- **componentDidMount()**
+
+  组件挂载到 DOM 后调用（只执行一次）。
+
+  适合做 “副作用操作”：如发起 API 请求、订阅事件（如 WebSocket）、初始化第三方库（如地图、图表）等。
+
+  这里可以安全地调用`setState`（会触发一次额外渲染，但用户无感知）。
+
+#### 2. 更新阶段（组件因 props/state 变化重新渲染）
+
+当组件的`props`变化、调用`setState`或`forceUpdate`时触发，可能多次执行。
+
+包含 5 个方法，执行顺序如下：
+
+- **static getDerivedStateFromProps(props, state)**
+
+  同挂载阶段，优先根据 props 更新 state。
+
+- **shouldComponentUpdate(nextProps, nextState)**
+
+  决定组件是否需要更新（返回`true`更新，`false`跳过）。
+
+  作用：性能优化（避免不必要的渲染）。默认返回`true`，可手动对比`nextProps`/`nextState`与当前值，减少渲染次数。
+
+- **render()**
+
+  重新渲染 UI（同挂载阶段）。
+
+- **getSnapshotBeforeUpdate(prevProps, prevState)**
+
+  在 DOM 更新前调用（如更新前获取滚动位置、DOM 尺寸等 “快照”）。
+
+  返回值：会作为参数传给`componentDidUpdate`的第三个参数。
+
+  注意：此方法少用，主要用于 “DOM 更新前保存状态” 的场景（如聊天窗口滚动位置保持）。
+
+- **componentDidUpdate(prevProps, prevState, snapshot)**
+
+  组件更新到 DOM 后调用。
+
+  适合做 “更新后的副作用”：如根据新 props 重新发请求（需加条件判断，避免无限循环）、更新第三方库状态等。
+
+  注意：若在这里调用`setState`，必须包裹在条件判断中（如`if (prevProps.id !== this.props.id)`），否则会触发无限更新。
+
+#### 3. 卸载阶段（组件从 DOM 中移除）
+
+只包含 1 个方法，执行一次：
+
+- componentWillUnmount()
+
+  组件卸载前调用，用于 “清理副作用”：如取消 API 请求、清除定时器 / 事件监听、解绑 WebSocket 等。
+
+  注意：这里不能调用setState（组件已卸载，不会再渲染）。
+
+#### 4. 错误处理阶段（组件发生错误时）
+
+当组件渲染、生命周期方法或子组件中抛出错误时触发：
+
+- **static getDerivedStateFromError(error)**：返回新 state，用于展示错误 UI。
+- **componentDidCatch(error, info)**：捕获错误并记录（如上报日志），不影响 UI 展示。
+
+### 函数组件的生命周期（基于 Hooks）
+
+React 16.8 引入 Hooks 后，函数组件可通过`useEffect`等 Hooks 模拟生命周期，更简洁灵活。
+
+核心是`useEffect`，它可以同时模拟**挂载、更新、卸载**阶段的逻辑：
+
+- **模拟 componentDidMount（只执行一次）**：
+
+  ```jsx
+  useEffect(() => {
+    // 挂载后执行（如发请求、订阅事件）
+    return () => {
+      // 可选：卸载时执行（清理副作用，如取消订阅）
+    };
+  }, []); // 空依赖数组：只在挂载和卸载时执行
+  ```
+
+- **模拟 componentDidUpdate（依赖变化时执行）**：
+
+  ```jsx
+  useEffect(() => {
+    // 当count变化时执行（如根据新count更新数据）
+  }, [count]); // 依赖数组：只有count变化时才执行
+  ```
+
+- **模拟 componentWillUnmount（清理副作用）**：
+
+  `useEffect`的返回函数会在组件卸载或依赖变化前执行，用于清理：
+
+  ```jsx
+  useEffect(() => {
+    const timer = setInterval(() => {}, 1000);
+    return () => {
+      clearInterval(timer); // 卸载时清除定时器
+    };
+  }, []);
+  ```
+
+其他 Hooks 也会影响生命周期逻辑：如`useState`触发更新、`useMemo`/`useCallback`优化渲染等。
+
+好的，React 生命周期主要分为**挂载、更新、卸载**三大阶段，我从类组件和函数组件两部分来说。
+
+#### 1. 类组件（核心钩子）
+
+- 挂载阶段：
+  - `constructor`：初始化 state 和方法绑定。
+  - `render`：返回 JSX，纯函数无副作用。
+  - `componentDidMount`：DOM 挂载后执行，适合做网络请求、订阅事件。
+- 更新阶段：
+  - `shouldComponentUpdate`：控制是否重渲染，用于性能优化。
+  - `render`：重新生成 UI。
+  - `componentDidUpdate`：DOM 更新后执行，注意加条件判断避免死循环。
+- 卸载阶段：
+  - `componentWillUnmount`：清理定时器、取消订阅，防止内存泄漏。
+
+#### 2. 函数组件（Hooks）
+
+用 `useEffect` 统一管理副作用：
+
+- `useEffect(() => {}, [])` → 模拟 `componentDidMount`
+- `useEffect(() => {}, [deps])` → 模拟 `componentDidUpdate`
+- `useEffect(() => () => {})` → 模拟 `componentWillUnmount`
+
+## 4. 类组件与函数组件有什么区别
+
+首先，我们要知道类组件和函数组件的共同点与不同点：
+
+- 对组件而言，类组件和函数组件在使用与呈现上没有任何不同，性能表现上，在现代浏览器中也不会有明显差异。
+- 但是在开发者的心智模型上却有着巨大的差异。类组件基于面向对象编程 (OOP)，主打继承。生命周期这些核心概念。而函数组件基于函数式编程 (FP)，主打 immutable、无副作用、引用透明等特点。
+
+> 1. 使用场景上，如果需要使用生命周期，设计模式上，如果需要使用继承，则推荐类组件。但是，自从 React v16.8 以后，因为 React Hooks 的推出，函数组件完全可以替代类组件使用。同时继承并不是组件最佳的设计模式，官方更加推荐 「组合优于继承」 的设计理念。因此类组件的优势渐渐淡出。
+> 2. 性能优化上，类组件主要依靠 shouldComponentUpdate 阻断渲染提升渲染性能；而函数组件依靠 React.memo 缓存渲染结果并跳过渲染来提升性能。
+> 3. 上手难度上，类组件更容易上手。
+> 4. 未来趋势上，由于 React Hooks 的推出，函数组件成为了社区未来主推的方案。 类组件在未来时间切片与并发模式中，由于生命周期带来的复杂度，并不易于优化。而函数组件本身清凉简单，且在 Hooks 的基础上提供了比原先更加细粒度的逻辑组织与复用，更能适应 React 未来的发展。
+
+## 讲一讲你了解的Fiber
+
+Fiber 其实是 React 16 之后推出的新架构核心，它最主要的作用就是解决原来 React 渲染时容易出现的卡顿、掉帧问题。在 Fiber 出现之前，React 的渲染过程是递归进行的，一旦开始递归 diff 对比，就无法中断，要是页面组件层级多、逻辑复杂，JS 线程就会被长时间霸占，导致浏览器没法处理用户输入、动画这些高优先级操作，进而出现页面卡顿、输入延迟的情况。
+
+而 Fiber 就是为了解决这个问题而生的，它把原来一次性、同步且不可中断的渲染大任务，拆分成了一个个细小的任务，这些小任务是可中断、可恢复，还能被调度的。从数据结构上来说，每个 Fiber 其实就是一个节点，每个节点里会保存着它的父节点、子节点和兄弟节点的引用，还有更新标记等信息，所有这些 Fiber 节点就构成了一棵 Fiber 树，React 后续的更新、diff 对比，都是在这棵树上进行的。
+
+而且 Fiber 还实现了任务优先级的调度，比如用户点击、输入这种高优先级任务，能插队打断正在执行的低优先级渲染任务，等高优先级任务执行完，再恢复之前的低优先级任务，这样就能保证页面始终流畅，不会出现卡顿的情况。简单来说，Fiber 本质上就是 React 的异步可中断更新架构，核心就是把大任务切碎，让浏览器有时间处理其他操作，从而解决渲染卡顿的问题。
+
+##  讲一讲React的并发模式
+
+React将页面的各种任务分了优先级，并引入了时间切片的概念，给每个任务分配时间，如果执行的时间过长则会让出主线程，再次从任务队列中取出任务执行。在执行的过程中如果有高优先级的任务需要执行，则会使用messageChannel包装成异步任务，进入队列，下次任务执行的时候，会进行判断任务的优先级，先进行执行高优先级的任务。
+
+## 讲一讲hooks
+
+**Hooks** 是 React 16.8 引入的特性，它的核心作用是**让函数组件能够使用状态（state）和其他 React 特性（如生命周期、上下文、引用等）**，而无需编写类组件，成为 React 开发的主流选择。
+
+### 使用 Hooks 的规则
+
+Hooks 的设计依赖严格的调用顺序，因此必须遵循两条规则（可通过`eslint-plugin-react-hooks`插件强制检查）：
+
+1. **只能在函数组件的顶层调用**：不能在条件语句、循环、嵌套函数中调用（否则 React 无法保证 Hooks 的调用顺序一致）。
+2. **只能在 React 函数组件或自定义 Hooks 中调用**：不能在普通 JavaScript 函数中使用。
+
+自定义 Hooks 是**抽取组件中可复用逻辑的函数**，命名必须以`use`开头（遵循 Hooks 规则），内部可调用其他 Hooks（内置或自定义）。
+
+### 为什么不能在循环中使用hook
+
+> 因为 React 内部是用**链表**按**调用顺序**来记录每个 Hook 的状态，不是靠变量名识别。
+>
+> 组件每次更新，都会按照同样的顺序读取之前的状态。
+>
+> 如果把 Hook 放在循环或条件里，会导致**前后两次调用顺序不一致**，Hook 链表错位，状态错乱，所以 React 强制禁止这种写法。
+
+## 怎么构建一个组件
+
+1、明确需求：定义组件的 “边界” 和 “职责”
+
+首先要明确组件的核心功能：它是什么（如 “一个用户卡片”“一个表单输入框”）、需要接收什么外部参数（props）、需要维护什么内部状态（state）、有哪些交互行为（如点击、输入）。
+
+确定组件类型
+
+优先选择**函数组件 + Hooks**（React 推荐），更简洁、易维护。
+
+2、定义 Props（外部输入）设计内部状态（State）
+
+只维护组件 “私有” 的状态，避免冗余。若状态需要共享，考虑提升到父组件或用全局状态管理。
+
+3、 实现 UI 结构（JSX）
+
+按 “语义化” 和 “可维护性” 组织 UI，拆分嵌套结构
+
+4、处理交互事件
+
+定义事件处理函数（如点击关注按钮），注意逻辑的封装和可读性。
+
+5、处理副作用（如 API 请求、事件监听）
+
+用`useEffect`管理副作用，注意清理（如组件卸载时取消请求）。
+
+6、逻辑复用：抽离自定义 Hook
+
+若多个组件需要 “关注 / 取消关注” 逻辑，可抽离组件。
+
+## 组件开发
+
+### 有状态组件和无状态组件
+
+**有状态组件**
+
+**特点**
+
+- 是类组件
+- 有继承
+- 有this
+- 有生命周期
+- 使用较多，易触发生命周期钩子函数
+- 内部使用state，根据外部组件传入的props和自身state渲染
+
+**使用场景**
+
+- 需要使用状态的
+- 需要状态操作组成的
+
+**总结**
+
+可维护自己的state，可以对组件做更多的控制
+
+**无状态组件**
+
+**特点**
+
+- 不依赖自身state
+- 可以是类组件或函数组件
+- 可避免使用this
+- 组件内部不维护state，props改变，组件re-render
+
+**使用场景**
+
+组件不需要管理state
+
+**优点**
+
+- 简化代码 专注render
+- 组件不需要实例化，无生命周期
+- 视图和数据解耦
+
+**缺点**
+
+- 无法使用ref
+- 无生命周期
+- 无法控制组件re-render
+
+> 当一个组件不需要管理自身状态时，就是无状组件，应该优先设计为函数组件，比如定义的
+
+### 函数式组件和类组件的区别
+
+- 编写形式：函数形式和类形式，函数组件语法简单，类组件更复杂。
+- 状态：函数组件无状态，类组件有状态
+- 生命周期：函数组件不存在生命周期，而是用React Hooks，类组件有生命周期
+
+### 受控组件和非受控组件
+
+受控组件和非受控组件是 React 处理表单元素（比如 input、select、textarea）的两种方式，核心区别在于**表单数据由谁来管理**——React 状态管理就是受控，DOM 自身状态管理就是非受控。
+
+先讲**受控组件**：
+
+它的核心是 “数据单向绑定”，表单元素的值完全由 React 的 state 驱动，修改值必须通过 setState 来更新，相当于 React 完全掌控了表单数据。比如一个输入框：
+
+```jsx
+const [value, setValue] = useState('');
+// 值绑定到state， onChange触发state更新
+<input 
+  value={value} 
+  onChange={(e) => setValue(e.target.value)} 
+  />
+```
+
+这里输入框的显示值永远和 state 里的 value 一致，用户输入时，onChange 会触发 state 更新，进而重新渲染输入框显示新值。受控组件的优势是能实时控制、校验表单数据，比如输入长度限制、格式校验，也能轻松实现表单联动（比如一个输入框变化影响另一个），是 React 推荐的写法。
+
+再讲**非受控组件**：
+
+它的表单数据由 DOM 自身维护，React 不直接管理值，而是通过 useRef 获取 DOM 元素来读取值，相当于 “事后获取”。比如：
+
+```jsx
+const inputRef = useRef(null);
+// 不绑定value，靠ref获取值
+<input ref={inputRef} defaultValue="默认值" />
+// 提交时才读取值
+const handleSubmit = () => {
+  console.log('输入值：', inputRef.current.value);
+};
+```
+
+这里输入框的 defaultValue 只是初始化值，后续用户输入的变化 React 不感知，只有点击提交时，才通过 ref 从 DOM 上拿到最新值。非受控组件更接近原生 HTML 的写法，适合简单场景（比如单个输入框、文件上传），缺点是无法实时校验，也没法实时同步数据。
+
+最后总结两者的核心区别和使用场景：
+
+1. 数据管理：受控组件由 React state 管理，非受控组件由 DOM 自身管理；
+2. 取值时机：受控组件实时获取（onChange 时），非受控组件按需获取（比如提交时）；
+3. 使用场景：复杂表单、需要实时校验 / 联动 → 用受控组件；简单表单、文件上传（input type="file" 只能非受控） → 用非受控组件。
+
+### React组件通信
+
+- 父组件向子组件传递
+- 子组件向父组件传递
+- 兄弟组件之间的通信
+- 父组件向后代组件传递
+- 非关系组件传递
+
+**父组件向子组件传递**
+
+React的数据流是单向的，这是最常见的方式，props
+
+**子组件向父组件传递**
+
+父组件把一个回调方法传给子组件，子组件调用这个方法并传入自身数据，实现反向通信。
+
+**兄弟组件之间的通信**
+
+父组件作为中间层实现数据互通(子A—>父组件—>子B)
+
+**父组件向后代组件传递**
+
+最普通的事情，像全局数据一样。
+
+使用context可共享数据，其他数据都能读取对应的数据。
+
+**非关系组件传递**
+
+组件间关系类型复杂，可以将数据进行一个全局资源管理，从而实现通信，例如zustand，redux dva
+
+### PureComponent&Component
+
+Component需要手动实现shouldComponentDidMount，而PureComponent通过浅对比默认实现了shouldComponentDidMount
+
+**浅比较，只比较第一层**
+
+PureComponent不仅影响本身，而且会影响子组件，所以其最佳情况是展示组件
+
+### 高阶组件
+
+[一文吃透React高阶组件](https://juejin.cn/post/6940422320427106335?searchId=2024011115523024CBFBEE638709A24DDB)
+
+高阶组件，它是个函数，接收组件作为参数，返回一个新的组件。
+
+## 常见hooks
+
+### 1.`useState`
+
+为函数组件添加本地状态。
+
+1. **多次调用`useState`是否有顺序要求？**
+
+   有。React 通过 Hook 的**调用顺序**来识别对应的状态，若在条件 / 循环中调用 Hook，会打乱顺序，导致状态匹配错误。因此 Hook 必须在组件顶层、按固定顺序调用。
+
+2. **setState 是同步还是异步？如何正确更新前一状态值？**
+
+   - React 中 `setState` 既不是绝对同步，也不是绝对异步，其执行时序由**调用场景**决定：
+
+     1. 「React 合成事件 / 生命周期函数」中：**异步更新**（批量更新，不会立即触发 re-render）；
+     2. 「原生 DOM 事件 / 定时器 / 异步操作（Promise/async-await）」中：**同步更新**（立即触发 re-render）；
+     3. React 18 及以上版本：默认开启 `concurrent mode`，所有场景默认批量更新（异步），可通过 `flushSync` 强制同步。
+
+     #### 分维度拆解（面试分点答，逻辑更清晰）
+
+     ##### 1. 异步场景（React 管控的执行环境）
+
+     - **适用场景**：React 合成事件（如 `onClick`/`onChange`）、类组件生命周期函数（`componentDidMount`/`shouldComponentUpdate` 等）；
+
+     - **底层逻辑**：React 为优化性能，会将多个 `setState` 合并为一次更新（批量更新），避免频繁 re-render；
+
+     - **表现特征**：调用 `setState` 后，`this.state` 不会立即更新，无法通过「调用后直接读取 `this.state`」获取最新值；
+
+     - 示例
+
+       ```jsx
+       class Demo extends React.Component {
+         state = { count: 0 };
+         handleClick = () => {
+           // React 合成事件中：异步批量更新
+           this.setState({ count: this.state.count + 1 });
+           console.log(this.state.count); // 输出 0（未立即更新）
+           this.setState({ count: this.state.count + 1 });
+           console.log(this.state.count); // 输出 0（两次 setState 合并）
+         };
+         render() {
+           return <button onClick={this.handleClick}>点击</button>;
+         }
+       }
+       // 最终 count 只加 1，因为两次 setState 被批量处理
+       ```
+
+     - 获取最新值的方式：使用 setState 的函数式更新（依赖前一次 state 计算）：
+
+       ```jsx
+       this.setState(prevState => ({ count: prevState.count + 1 }));
+       this.setState(prevState => ({ count: prevState.count + 1 }));
+       // 最终 count 加 2，prevState 始终是最新状态
+       ```
+
+
+     ##### 2. 同步场景（非 React 管控的执行环境）
+
+     - **适用场景**：原生 DOM 事件（如 `document.addEventListener` 绑定的事件）、定时器（`setTimeout/setInterval`）、Promise/async-await、AJAX 回调；
+
+     - **底层逻辑**：这些场景脱离 React 事件系统管控，React 无法进行批量更新，`setState` 会立即触发 re-render；
+
+     - 示例
+
+       ```jsx
+       class Demo extends React.Component {
+         state = { count: 0 };
+         componentDidMount() {
+           // 原生 DOM 事件：同步更新
+           document.body.addEventListener('click', () => {
+             this.setState({ count: this.state.count + 1 });
+             console.log(this.state.count); // 输出 1（立即更新）
+           });
+           // 定时器：同步更新
+           setTimeout(() => {
+             this.setState({ count: this.state.count + 1 });
+             console.log(this.state.count); // 输出 2（立即更新）
+           }, 0);
+         }
+         render() { return <div>{this.state.count}</div>; }
+       }
+       ```
+
+
+     ##### 3. React 18 版本的关键变化（高频追问点）
+
+     - React 18 引入「自动批量更新」，即使在原生事件 / 定时器等场景，`setState` 也默认异步批量更新（对齐 React 合成事件行为）；
+
+     - 如需强制同步更新，可使用 `ReactDOM.flushSync`
+
+       ```jsx
+       import { flushSync } from 'react-dom';
+       
+       const handleClick = () => {
+         flushSync(() => {
+           this.setState({ count: this.state.count + 1 });
+         });
+         console.log(this.state.count); // 输出最新值（同步）
+       };
+       ```
+
+     #### 面试总结（收尾升华，体现深度）
+
+     `setState` 的 “同步 / 异步” 本质是 React 的**性能优化策略**：通过批量更新减少不必要的 DOM 渲染，仅在脱离 React 管控的环境下才会同步执行。React 18 进一步统一了更新逻辑，默认批量更新覆盖所有场景，同时保留 `flushSync` 满足特殊同步需求。
+
+     ### 避坑提醒（面试易踩错点）
+
+     1. 不要说 “setState 是异步的”（绝对化表述），需强调 “场景决定时序”；
+     2. 区分 “异步更新” 和 “异步函数”：`setState` 本身是同步执行的函数，只是状态更新和 re-render 被延迟（异步调度）；
+     3. React 18 的批量更新是高频追问点，必须主动提及以体现版本认知。
+
+### 2.`useEffect`
+
+处理副作用（数据请求、订阅、DOM 操作等）。
+
+1. **依赖数组的作用？**
+
+   控制`useEffect`的执行时机：
+
+   - 无依赖数组：组件**每次渲染后**都执行；
+   - 空依赖数组`[]`：仅在组件**首次渲染后**执行；
+   - 有依赖项：仅当**依赖项发生变化**时执行。
+
+2. **如何模拟类组件的生命周期？**
+
+   - `componentDidMount`：`useEffect(() => { ... }, [])`（空依赖）；
+   - `componentDidUpdate`：`useEffect(() => { ... }, [依赖项])`（依赖变化时执行）；
+   - `componentWillUnmount`：在`useEffect`的**返回函数**中写清理逻辑（如取消订阅、清除定时器）。
+
+3. **避免陷入死循环的技巧？**
+
+   - 确保依赖数组**包含所有用到的外部变量**（避免闭包捕获旧值）；
+   - 若依赖是对象 / 函数，可通过`useMemo`/`useCallback`缓存，或用`useRef`存储（避免不必要的依赖变化）。
+
+#### 讲一讲useEffect
+
+useEffect可以传入两个参数，**第一个是回调函数，第二个是一个数组**，表示依赖项。当依赖项为空的时候，会在组件**初始化**的时候执行一次。当数组不为空的时候，数组中的依赖项发生变化之后，会执行第一个回调函数。
+
+回调函数中可以return返回一个函数，这个函数会在组件被卸载的时候执行。
+
+### 3.`useRef`
+
+创建可变的 ref 对象，用于：
+
+- 获取 DOM 节点引用；
+- 存储跨渲染的值（不会触发重渲染）。
+
+1. **和 state 有何不同？什么情况需要使用 ref？**
+
+   - 不同：`state`变化会触发组件重渲染；`ref.current`变化**不会触发重渲染**。
+   - 使用场景：需要**保存跨渲染的可变值**（如定时器 ID）、**操作 DOM 节点**时用 ref。
+
+2. **如何在不重新渲染组件的情况下记录某值？**
+
+   用`useRef`存储，修改`ref.current`即可（不会触发重渲染）。
+
+### 4.`useCallback` & `useMemo`
+
+- `useCallback`：缓存**函数引用**，避免子组件因函数引用变化重复渲染；
+- `useMemo`：缓存**计算结果**，避免重复执行昂贵的计算。
+
+1. **它们的区别与使用场景？**
+
+   - 区别：`useCallback`缓存**函数**，`useMemo`缓存**函数的返回值**；
+   - 场景：
+     - 向子组件传递函数时，用`useCallback`缓存函数引用；
+     - 执行昂贵计算（如大量数据处理）时，用`useMemo`缓存结果。
+
+2. **是否滥用会影响性能？**
+
+   是。缓存本身需要消耗内存，若缓存的是轻量函数 / 简单计算，反而会增加额外开销。只在**子组件是纯组件（依赖 props 浅比较）** 或**计算确实昂贵**时使用。
+
+#### useCallback和useMemo的场景和用法
+
+`useCallback` 和 `useMemo` 都是 React 的性能优化工具，主要用于避免不必要的重新渲染或重新计算。
+
+`useCallback` 用于缓存一个函数，只有在其依赖项发生变化时才会重新生成，而 `useMemo` 用于缓存一个计算结果，只有在其依赖项变化时才会重新计算。这两者的共同点是避免了每次渲染时都创建新的函数或重新计算值，从而减少了组件的性能开销。
+
+通常，`useCallback` 用于传递给子组件的回调函数，而 `useMemo` 用于复杂计算的缓存，比如在渲染过程中需要多次计算某个值但计算代价较高时，可以用 `useMemo` 来缓存计算结果，避免每次渲染时都进行计算。使用这两个 Hook 可以在性能瓶颈较大的应用中提高渲染效率，但也要谨慎使用，避免过度优化，一般是配合memo子组件缓存配合使用，其他情况下没有任何意义。
+
+### 5.`useContext`
+
+跨组件共享数据（替代 Redux 做轻量级状态管理）。
+
+1. **如何结合`Context.Provider`和`useContext`使用？**
+   - 先创建 Context：`const MyContext = createContext(默认值)`；
+   - 在父组件用`MyContext.Provider`包裹子组件，通过`value`传递数据；
+   - 子组件中用`useContext(MyContext)`获取共享数据。
+2. **如何避免 context value 频繁变化导致子组件重复渲染？**
+   - 将`context value`拆分为多个独立的 Context（只让依赖对应数据的组件重渲染）；
+   - 用`useMemo`缓存`context value`（避免父组件渲染时 value 不必要的变化）。
+
+### 6.`useReducer`
+
+管理更复杂的状态逻辑（比`useState`更强大）。
+
+1. **与 Redux 有何异同？**
+   - 相同：都基于 “reducer 纯函数 + 动作（action）” 管理状态；
+   - 不同：`useReducer`是**组件内 / 局部**的状态管理；Redux 是**全局**状态管理，支持中间件（如异步 action）、时间旅行调试等。
+2. **如何组织 action 和 reducer 结构？**
+   - 用**常量定义 action 类型**（避免拼写错误）；
+   - 把 reducer 拆分为多个小 reducer（按状态模块拆分），最后合并；
+   - 复杂 action 可封装为 “action 创建函数”。
+3. **什么场景下需要使用？**
+   - 状态逻辑复杂（多个子状态相互依赖）；
+   - 状态更新依赖前一状态（比`useState`的函数式更新更易维护）；
+   - 希望通过`useContext + useReducer`实现轻量级全局状态管理。
+
+
+
+React 整个架构，其实可以从**渲染 → 更新 → 优化 → 架构升级**串成一条完整链路。
+
+首先从最基础的说起，我们写的 JSX 最终会被编译成 `React.createElement`，返回的就是**虚拟 DOM**，它是一个轻量的 JS 对象，用来描述真实 DOM 结构。React 之所以要用虚拟 DOM，是因为直接操作真实 DOM 代价太高，用虚拟 DOM 做对比，再批量更新真实 DOM，能减少不必要的渲染，提升性能。
+
+那怎么对比呢？就是 **Diff 算法**。React 的 Diff 做了三个优化：只同层比较、类型不同直接替换、列表用 key 来复用节点，这样就把原本 O (n³) 的复杂度降到了 O (n)。这也是为什么我们不能用 index 当 key，因为顺序一变，key 就变，Diff 会误判，导致大量不必要的重建和渲染。
+
+Diff 之后，React 会把需要更新的地方收集起来，一次性更新到真实 DOM 上。在这个过程里，组件会经历 **生命周期**：挂载、更新、卸载。挂载时会执行 constructor 初始化 state，然后 render，最后挂载到真实 DOM 后执行 componentDidMount，适合发请求；更新时会重新 render，然后执行 componentDidUpdate；卸载时执行 componentWillUnmount，用来清除定时器、取消订阅，防止内存泄漏。现在函数组件用 useEffect 统一管理这些副作用，逻辑更集中。
+
+但早期 React 有个问题：**递归渲染不可中断**。一旦开始更新，JS 就霸占主线程，页面会卡顿。所以 React 16 推出了 **Fiber 架构**。Fiber 把原来的递归改成循环遍历，把虚拟 DOM 改成 Fiber 链表结构，每个 Fiber 节点都可以记录暂停、恢复、优先级，让渲染过程变成**可中断、可恢复、可调度**。浏览器一有空，React 就继续算；浏览器要渲染、响应用户操作，React 就立刻让出线程，等高优任务做完再继续。这样就能保证页面永远不会卡。
+
+Fiber 再配合 **Scheduler 调度器**，给不同更新分配优先级：比如输入、点击是高优，数据返回、列表渲染是低优，高优任务可以直接插队，这就是 React 的**并发更新**机制。
+
+最后到我们日常写代码，React 给我们提供了 Hooks，比如 useState、useEffect、useMemo、useCallback，本质都是为了让函数组件能拥有状态、副作用、缓存能力，配合 Fiber 的异步更新，让组件更新更精准、更少重渲染。
+
+所以整条线就是：
+
+**JSX → 虚拟 DOM → Diff 算法 → 生命周期 → 旧架构卡顿 → Fiber 架构解决可中断 → 调度优先级 → Hooks 优化组件渲染**
+
+这就是 React 从底层到上层的完整工作原理。
+
+## React和Vue的区别
+
+React 和 Vue 都是主流的组件化前端框架，核心都是基于虚拟 DOM 做高效更新，但设计思路有明显区别。
+
+**React 偏向函数式、单向数据流**，使用 JSX 把视图和逻辑写在一起，更强调灵活性和规范性，更新需要手动 setState，优化要靠 memo、useMemo 这些 API，适合大型复杂项目和跨端开发。状态管理有redux，zustand
+
+**Vue 更偏向渐进式、基于 Proxy 实现自动响应式**，模板语法更贴近 HTML，上手更简单，数据响应式是自动劫持的，默认优化更好，开发效率更高，适合快速迭代和中后台项目。状态管理有vuex，pinia。
+
+
+
+## React router
+
+### 什么是router
+
+React-Router 是 React 生态里最常用的**前端路由库**，用来在单页面应用（SPA）中实现**不刷新页面的页面切换**。
+
+它的核心作用是：**建立 URL 路径和组件之间的映射关系**，当 URL 改变时，自动渲染对应的组件，而不向服务器重新请求页面。
+
+React-Router 主要有两种路由模式：
+
+一种是 **HashRouter**，基于 URL 里的哈希片（ # ）段实现，兼容性好，不需要后端配置，但 URL 不美观。
+
+另一种是 **BrowserRouter**，基于 `history` 这个库和 React Context  实现，URL 更干净标准，用户体验更好，但需要后端配合配置，否则刷新会 404。
+
+在 React-Router V6 里，常用的核心组件有：
+
+- BrowserRouter/HashRouter：作为路由的根容器，包裹整个应用
+- Routes 和 Route：用来配置路径和对应渲染的组件
+- Link：用来跳转路由，不会刷新页面
+- useNavigate：实现编程式导航
+- useParams：获取动态路由参数
+
+**router的底层原理？**
+
+**history的什么api**
+
+### BrowserRouter
+
+在 React Router 中，最外层的 API 通常就是用 BrowserRouter。BrowserRouter 的内部实现是用了 `history` 这个库和 React Context 来实现的，所以当你的用户前进后退时，`history` 这个库会记住用户的历史记录，这样需要跳转时可以直接操作。
+
+BrowserRouter 使用时，通常用来包住其它需要路由的组件，所以通常会需要在你的应用的最外层用它，比如如下
+
+### Route
+
+Route 用来定义一个**访问路径**与 **React 组件**之间的关系。比如说，如果你希望用户访问 `https://your_site.com/about` 的时候加载 `<About />` 这个 React 页面，那么你就需要用 Route:
+
+```ini
+<Route path="/about" element={<About />} />
+```
+
+### Routes
+
+Routes 是用来包住路由访问路径(Route)的。它决定用户在浏览器中输入的路径到对应加载什么 React 组件，因此绝大多数情况下，Routes 的唯一作用是用来包住一系列的 `Route`，比如如下
+
+```javascript
+import { Routes, Route } from "react-router-dom";
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+    </Routes>
+  );
+}
+```
+
+在这里，Routes 告诉了 React Router 每当用户访问根地址时，加载 `Home` 这个页面，而当用户访问 `/about` 时，就加载 `<About />` 页面。
+
+### 如何设置默认页路径(如 404 页)
+
+在上文的路由列表 `Routes` 中，我们可以加入一个 `catch all` 的默认页面，比如用来作 404 页面。
+
+我们只要在最后加入 `path` 为 `*` 的一个路径，意为匹配所有路径，即可
+
+```jsx
+function App() {
+  return <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </BrowserRouter>
+}
+// 用来作为 404 页面的组件
+const NotFound = () => {
+  return <div>你来到了没有知识的荒原</div>
+}
+```
+
+### 自定义导航守卫
+
+在项目开发的过程中，一般我们会有这样的需求：有些页面可以随意访问，但是部分页面必须用户登录之后才能访问。我们可以给路由配置一个白名单，如果当前访问页面的路径在白名单里面，就能正常访问。反之，如果访问的页面需要权限，用户必须登录之后才能正常访问。不能访问的页面当用户触发跳转时，重定向到登录页面。在登录完成之后，在回到之前的页面。
+
+封装一个校验路由权限并且重定向的组件。如下所示：
+
+```js
+// eslint-disable-next-line react/prop-types
+export default function RequireAuth({children}) {
+    const whiteList = ["/", "/about"]
+
+    const { pathname } = useLocation();
+
+    // 不需要权限的页面
+    const notRequiredAuth = whiteList.includes(pathname);
+
+    // 访问的页面在白名单里，或者用户拥有权限 hasToken，直接跳转。否则重定向到到 login 
+    return (hasToken || notRequiredAuth ? children : <Navigate to="/login" replace state={pathname} />)
+}
+```
+
+接下来我们只要使用该组件包裹我们的路由组件就好了
+
+```jsx
+<RequireAuth>
+    <Link to="/list" style={{marginRight: '15px'}}>列表</Link>
+</RequireAuth>
+```
+
+
+
+
+
+## React新内容
+
+React 19 目前处于 RC 阶段（候选发布版），核心聚焦 “简化表单、交互、状态管理”，以下特性已足够稳定，是未来开发的主流方向：
+
+#### 1. Actions（表单提交 / 异步操作的统一方案）
+
+- 是什么：替代传统的 useState + useEffect 处理表单提交 / 异步请求，允许组件直接传递 “异步函数” 作为事件处理，自动处理加载 / 错误状态，无需手动维护 loading/error 状态。
+
+- 为什么值得学：彻底简化表单逻辑（大厂面试常考 “React 表单处理优化”），是 React 官方推荐的新一代表单方案。
+
+- 简单示例
+
+  ```jsx
+  import { useActionState } from 'react';
+  
+  // 异步提交函数
+  async function submitForm(prevState, formData) {
+    const res = await fetch('/api/submit', {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) throw new Error('提交失败');
+    return { success: true };
+  }
+  
+  function FormDemo() {
+    // useActionState 管理 action 状态：状态值、提交函数、初始状态
+    const [state, formAction] = useActionState(submitForm, { success: false });
+  
+    return (
+      <form action={formAction}> {/* 直接绑定 action */}
+        <input name="username" placeholder="用户名" />
+        <button type="submit" disabled={state.pending}>
+          {state.pending ? '提交中...' : '提交'}
+        </button>
+        {state.error && <div>{state.error.message}</div>}
+        {state.success && <div>提交成功！</div>}
+      </form>
+    );
+  }
+  ```
+
+#### 2. `useOptimistic`（乐观更新）
+
+- 是什么：
+
+  用于 “乐观更新” 场景 —— 用户操作后先更新 UI（无需等接口返回），如果接口成功则保留更新，失败则回滚，大幅提升交互体验。
+
+- 为什么值得学：
+
+  解决 “异步操作等待期间 UI 无反馈” 的问题，是电商、社交类应用的核心优化手段（如点赞、下单、评论）。
+
+- 简单示例（点赞功能）
+
+  ```jsx
+  import { useOptimistic, useState } from 'react';
+  
+  function LikeButton() {
+    const [count, setCount] = useState(0);
+    // 乐观更新：第一个参数是当前状态，第二个是更新函数
+    const [optimisticCount, addOptimisticLike] = useOptimistic(
+      count,
+      (current, _) => current + 1 // 先临时 +1
+    );
+  
+    // 异步点赞接口
+    const handleLike = async () => {
+      addOptimisticLike(); // 立即乐观更新 UI
+      try {
+        await fetch('/api/like', { method: 'POST' });
+        setCount(count + 1); // 接口成功，正式更新
+      } catch (e) {
+        // 接口失败，useOptimistic 自动回滚到原 count
+        alert('点赞失败');
+      }
+    };
+  
+    return <button onClick={handleLike}>点赞 {optimisticCount}</button>;
+  }
+  ```
+
+#### 3. `useFormStatus`（表单状态感知）
+
+- 是什么：用于表单内部组件感知表单的提交状态（如 pending、action、method），无需通过 props 传递状态。
+- 为什么值得学：简化复杂表单的状态管理，比如表单内的按钮、提示文案可直接感知提交状态，无需手动传参。

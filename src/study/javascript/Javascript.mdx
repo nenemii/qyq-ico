@@ -1,0 +1,1234 @@
+# js八股
+
+## 数据类型
+
+`JavaScript`共有八种数据类型，分别是 **Undefined、Null、Boolean、Number、String、Object、Symbol、BigInt**。
+
+其中 **Symbol** 和 **BigInt** 是ES6 中新增的数据类型：
+
+- **Symbol**代表创建后独一无二且不可变的数据类型，它主要是为了解决可能出现的全局变量冲突的问题。   
+- ![image-20251101180411753](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101180411753.png)
+- **BigInt** 是一种数字类型的数据，它可以表示任意精度格式的整数，使用 BigInt 可以安全地存储和操作大整数，即使这个数已经超出了 Number 能够表示的安全整数范围。
+
+这些数据可以分为**原始数据类型**和**引用数据类型（复杂数据类型）**，他们在内存中的存储方式不同。
+
+- **堆：** 存放**引用数据类型**，引用数据类型占据空间大、大小不固定。如果存储在栈中，将会影响程序运行的性能；**引用数据类型在栈中存储了指针**，该指针指向堆中该实体的起始地址，如`Object`、`Array`、`Function`。
+- **栈：** 存放**基本数据类型**，栈中的简单数据段，占据空间小，属于被频繁使用的数据，如`String`、`Number`、`Null`、`Boolean`。
+
+![image-20251101180123105](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101180123105.png)
+
+### null和undefined区别（重点）
+
+`Undefined` 和 `Null` 都是基本数据类型，这两个基本数据类型分别都只有一个值，就是 `undefined` 和 `null`。
+
+- **undefined** 代表的含义是**未定义**，一般变量**声明了但还没有定义**的时候会返回 `undefined`，`typeof`为`undefined`
+- **null** 代表的含义是**空对象**，null主要用于赋值给一些可能会返回对象的变量，作为初始化，`typeof`为`object`
+
+```js
+null == undefined // true
+
+null === undefined //false
+```
+
+![image-20251101183550248](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101183550248.png)
+
+### instanceof 运算符的实现原理及实现
+
+`instanceof`运算符适用于检测**构造函数**的`prototype`属性是否出现在某个**实例对象的原型链上**
+
+`instanceof` 运算符的**原理**是基于**原型链的查找**。当使用 `obj instanceof Constructor` 进行判断时，`JavaScript` 引擎会从 `obj` 的原型链上查找 `Constructor.prototype` 是否存在，如果存在则返回 `true`，否则继续在原型链上查找。如果查找到原型链的顶端仍然没有找到，则返回 `false`。
+
+`instanceof`运算符只能用于检查某个对象是否是某个构造函数的实例，不能用于基本类型的检查，如`string`、`number`等
+
+### typeof 和 instanceof 区别（重点）
+
+![image-20251101181018614](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101181018614.png)
+
+![image-20251101183759075](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101183759075.png)
+
+![image-20251101181638310](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101181638310.png)
+
+### 判断数组的方式有哪些 
+
+![image-20251101181722742](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101181722742.png)
+
+### 数组有哪些原生方法？
+
+- 数组和字符串的转换方法：`toString()`、`toLocalString()`、`join() `，其中` join()` 方法可以指定转换为字符串时的分隔符。
+- 数组尾部操作的方法 `pop()` 和` push()`，`push` 方法可以传入多个参数。
+- 数组首部操作的方法 `shift()` 和 `unshift()` 重排序的方法 `reverse()` 和` sort()`，`sort()` 方法可以传入一个函数来进行比较，传入前后两个值，如果返回值为正数，则交换两个参数的位置。
+- 数组连接的方法` concat()` ，返回的是拼接好的数组，不影响原数组。
+- 数组截取办法 `slice()`，用于截取数组中的一部分返回，不影响原数组。
+- 数组插入方法 `splice()`，影响原数组查找特定项的索引的方法，`indexOf()` 和 `lastIndexOf()` 迭代方法 `every()`、`some()`、`filter()`、`map()` 和`forEach()`方法
+- 数组归并方法 `reduce() `和 `reduceRight()` 方法
+- **改变原数组的方法**：`fill()`、`pop()`、`push()`、`shift()`、`splice()`、`unshift()`、`reverse()`、`sort()`；
+- **不改变原数组的方法**：`concat()`、`every()`、`filter()`、`find()`、`findIndex()`、`forEach()`、`indexOf()`、`join()`、`lastIndexOf()`、`map()`、`reduce()`、`reduceRight()`、`slice()`、`some()`。
+
+### 遍历数组的方法
+
+| 方法        | 返回值                 | 能否中断（break） | 是否改变原数组       | 典型用场景                     |
+| ----------- | ---------------------- | ----------------- | -------------------- | ------------------------------ |
+| `for`       | 无                     | 能                | 否（除非手动改）     | 需中断的复杂遍历               |
+| `forEach`   | `undefined`            | 不能              | 否（除非手动改引用） | 简单遍历，无中断需求           |
+| `map`       | 新数组（长度同原数组） | 不能              | 否                   | 数据转换（一对一）             |
+| `filter`    | 新数组（筛选后元素）   | 不能              | 否                   | 数据筛选                       |
+| `find`      | 第一个符合条件的元素   | 能（找到后终止）  | 否                   | 查找单个元素                   |
+| `findIndex` | 第一个符合条件的索引   | 能（找到后终止）  | 否                   | 查找元素索引                   |
+| `some`      | 布尔值（是否存在）     | 能（找到后终止）  | 否                   | 判断 “存在符合条件的元素”      |
+| `every`     | 布尔值（是否全部符合） | 能（不符则终止）  | 否                   | 判断 “所有元素符合条件”        |
+| `reduce`    | 累积结果               | 不能              | 否                   | 聚合计算（求和、分组等）       |
+| `for...of`  | 无                     | 能                | 否（除非手动改）     | 可中断的遍历，或遍历可迭代对象 |
+
+![image-20251101221941197](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101221941197.png)
+
+![](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101184623688.png)
+
+## JavaScript 原型与原型链（重点）
+
+### 原型（Prototype）
+
+每个函数在创建时，JS 都会自动给它加一个属性 `prototype`。 这个属性指向一个对象，这个对象里保存着“共享的属性和方法”。 
+
+### 原型链
+
+```js
+console.log(p1.__proto__ === Person.prototype); // true
+console.log(Person.prototype.__proto__ === Object.prototype); // true
+console.log(Object.prototype.__proto__ === null); // true
+
+```
+
+JS 会一层层往上查找属性，直到最顶层 `Object.prototype`。（）
+
+![image-20251101195047125](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101195047125.png)
+
+我的理解：
+person（）是一个构造函数，每个函数都有一个“通用对象”(就是prototype)，里面的属性和方法是共享的，
+
+至于__proto_ _，就是把一个实例化对象向上找了一层，constructor就是指向析构函数，是prototype的一个属性
+
+## 作用域链与闭包（重点）
+
+### 作用域
+
+JS 中作用域是“变量能被访问到的范围”。
+
+1. **全局作用域**：所有地方都能访问。
+2. **函数作用域**：只在函数内部有效。
+3. **块级作用域**：`let`、`const` 在 `{}` 内有效。
+
+当 JS 访问变量时，会：
+
+1. 先在当前作用域找；
+2. 找不到就往上一级；
+3. 一直查到全局；
+4. 如果都没有，就报错。
+
+### 闭包
+
+闭包就是：
+
+> **函数可以“记住”并访问它被创建时的作用域中的变量。**
+
+即使这个函数在外部执行，它依然能访问那个作用域的变量！
+
+```javascript
+function makeTea() {
+  let flavor = '草莓奶茶';
+  return function() {
+    console.log('顾客点的口味是：' + flavor);
+  };
+}
+const order = makeTea();
+order(); // 顾客点的口味是：草莓奶茶
+```
+
+解释：
+
+- `makeTea` 执行完后，本该销毁内部变量；
+- 但返回的函数“引用”了 `flavor`；
+- JS 为了让它还能用 → 把 `flavor` 留下；
+- 这就叫 **闭包**。
+
+用途：
+
+- 封装类和模块
+- 用于创建全局私有变量
+- 实现函数柯里化
+
+| 知识点   | 含义                  | 奶茶店比喻                   |
+| -------- | --------------------- | ---------------------------- |
+| 闭包     | 函数记住外部变量      | 点单纸条 📒                   |
+| 应用场景 | 计数器、私有变量      | 点单机记号、配方封装         |
+| 循环问题 | 延迟执行变量被共享    | 所有顾客都写成同一个号   333 |
+| 解决方式 | 用 let 或立即执行函数 | 每人一张点单纸    123        |
+| 风险     | 内存泄漏              | 纸条太多堆爆仓库             |
+
+
+
+## **this指向**（重点）
+
+### this
+
+new绑定>显示绑定>隐式绑定>默认绑定
+
+**this指向在函数被调用时确定，即执行上下文被创建时确定。函数执行过程中，一旦this指向被确定就不可更改。**
+
+在一个函数上下文中，this由调用者提供，由调用函数的方式来决定。**如果调用者函数，被某一个对象所拥有，那么该函数在调用时，内部的this指向该对象。如果函数独立调用，那么该函数内部的this，则指向undefined**。但是在非严格模式中，当this指向undefined时，它会被自动指向全局对象。
+
+```js
+// demo03
+var a = 20;
+
+var obj = {
+
+    a: 10,
+
+    c: this.a + 20,
+
+    fn: function () {
+        return this.a;
+    }
+}
+
+console.log(obj.c); //40
+
+console.log(obj.fn()); //10
+```
+
+**单独的{}不会形成新的作用域，**因此这里的this.a，由于并没有作用域的限制，它仍然处于全局作用域之中。所以这里的this其实是指向的window对象。
+
+**全局上下文**
+
+非严格模式和严格模式中this都是指向顶层对象（浏览器中是window，nodejs中是global）。
+
+```js
+// 在浏览器中，全局对象为 window 对象：
+
+console.log(this === window); // true
+
+this.a = 37;
+
+console.log(window.a); // 37
+```
+
+**函数调用**
+
+严格模式下 this 为undefined，非严格模式下为 window
+
+**箭头函数**
+
+作为方法的箭头函数 this 指向当前被定义变量的上下文环境。
+
+箭头函数的this 为定义时所在的 this，不绑定this (因为箭头函数没有Constructor这个内部槽)，会捕获其所在上下文的 this 作为自己的 this。(箭头函数的this就是它在外面的第一个不是箭头函数的函数的this)**
+
+> 没有arguments变量
+
+若包裹在函数中，就是函数调用时所在的对象，放在全局就是window，箭头函数的this就是外层代码块的this，**固定不变**。
+
+ES5 中，永远是 this 指向最后调用它的那个对象
+
+- 不可用于构造函数，无prototype
+- 无法改变this指向
+
+**bind 函数**
+
+在 Function的原型链上，Function.prototype.bind.通过 bind 函数绑定后，函数将绑定在其第一个参数对象上，除非使用new时被改变，其他情况不会改变，无论在啥情况下被调用。
+
+**setTimeout & setInterval**
+
+**延时函数内部回调函数this 指向全局对象window。**
+
+**使用箭头函数使其 this 指向我们所期望的那个对象。**
+
+> 1. 如果this 是 在一个函数中，并且被用作方法来叫，那么这个时候的 this 就指向了父级对象;
+> 2. 如果this 是在匿名函数，或者全局环境的函数中，那么这个时候的 this 就是undefined;
+> 3. 如果this 是在构造函数中，那么这个时候的 this 就指向了即将生成的那个对象
+
+**introduction() === introduction.call() ，前者是后者的简写！并且call()中的第一个传参可以指定这个函数中的 this 指向谁！**
+
+```js
+function introduction(name) {
+    console.log('你好,' + name + ' 我是' + this.name);
+}
+
+var zhangsan = {
+    name: '张三'
+}
+
+introduction.call(zhangsan, "李四") // 你好 李四, 我是 张三 call
+
+introduction.apply(zhangsan, ["李四"]) // 你好 李四, 我是 张三 apply
+
+intro = introduction.bind(zhangsan)
+
+    intro("李四") // 你好 李四, 我是 张三 bind
+```
+
+**bind()是返回一个绑定新环境的function，等着被调用。**
+
+### 关于 this 的指向问题
+
+**`每个函数的 this 是在调用时被绑定的，取决于函数的调用位置`**
+
+如何判断 this 的指向呢？有两个关键的点 调用位置 和 绑定规则。
+
+**一、调用位置**
+
+我们知道执行是在执行栈中的，执行栈是一个栈的结构，遵从先进后出，我们会把执行的任务压入栈中。所以我们这里寻找的调用位置就是当前正在执行的函数的上一个调用的位置。下面看个例子理解：
+
+```js
+function a() {
+    //当前调用栈是：a，所以当前调用位置是全局
+    console.log(“a”)
+    b(); // b 的调用位置
+}
+function b() {
+    //当前调用栈是：a->b，所以当前调用位置是a
+    console.log(“b”)
+    c(); // c 的调用位置
+}
+function c() {
+    //当前调用栈是：a->b->c，所以当前调用位置是b
+    console.log(“c”)
+}
+
+a()
+```
+
+**二、绑定规则**
+
+- **`默认绑定`**：这条规则可以看作是无法应用其他规则时的默认规则，也是我们最常用的。
+
+```js
+var a = 2
+function foo() {
+    var a = 3;
+    console.log(this.a)
+}
+foo() // 2，为什么不是3，那就是因为使用了 this，根据我们上面的调用规则，他是绑定到全局中的
+```
+
+- **`隐式绑定`** 需要考虑的规则是调用位置是否有上下文对象，当函数拥有上下文对象时，隐式绑定会把this绑定到这个上下文来，并且如果函数调用前存在多个对象，this指向距离调用自己最近的对象。下面我们看例子来理解这段话：
+
+```js
+var a = 1;
+
+function foo() {
+    var a = 4;
+    console.log(this.a)
+}
+
+var obj2 = {
+    a:2,
+    foo:foo
+};
+
+var obj1 = {
+    a:3,
+    obj2: obj2
+};
+
+obj2.foo()  // 2 当函数拥有上下文对象时，隐式绑定会把this绑定到这个上下文来
+obj1.obj2.foo() //2 如果函数调用前存在多个对象，this指向距离调用自己最近的对象
+```
+
+在隐式绑定中，还会出现一个问题，那就是 **`隐式丢失`**，作为 **参数传递** 以及 **变量赋值**， 会使参数或者变量直接指向函数，从而丢失 this 指向。
+
+**1. 变量赋值**
+
+```js
+var a = 1;
+function foo() {
+    var a = 3;
+    console.log(this.a)
+}
+var obj = {
+    a:2,
+    foo:foo
+};
+var bar = obj.foo;
+bar() // 1 
+```
+
+为什么这里输出的是 1 ，而不是按照上面的规则输出 2 呢？这是因为这里的引用实际只是给函数起了个名字 bar 而已，并没有被调用，在声明 var bar 后才调用 bar () == foo ()， 而此时的 this 指向也就是全局的了。
+
+**2. 参数传递**
+
+```js
+var a = 1;
+function foo() {
+    var a = 3;
+    console.log(this.a)
+}
+function doFun(fn) {
+ fn()
+}
+var obj = {
+    a:2,
+    foo:foo
+};
+doFun(obj.foo;) // 1 
+```
+
+这里其实也是和上面的情况相似的，在 doFun 里面，fn 其实引用的是 foo，所以指向的是全局的
+
+那么如何解决 **`隐式丢失`** 呢？
+
+使用**隐式绑定** ：将函数绑定至对象属性，调用时通过对象属性直接调用，弱赋值到其他对象，需将正对象赋值过去，不然会发生丢失（丢失初次绑定的环境）
+
+- **`显式绑定`**
+
+显示绑定就是指通过 call，apply 以及 bind方法 改变 this 的行为，具体这三个方法看下面就好了~
+
+- **`new 绑定`**
+
+我们在上面的构造函数中讲到 new 操作符构造函数的过程，可以上去看看~
+
+使用 new 来调用的时候，实际构建一个新的对象并把他绑定到 foo（）调用的 this 上。
+
+```js
+function foo(a) {
+    this.a = a;
+}
+var bar = new foo(2);
+console.log(bar.a) // 2
+```
+
+- **`箭头函数`**
+
+箭头函数不会创建自己的 this，所以它没有自己的this，它只会从自己的作用域链的上一层继承 this。
+
+### 改变this指向的方法（bind / call / apply）
+
+**`三者都是用来重新定义 this 这个对象的`**
+
+**一、三者的区别：**
+
+**1、调用上**
+
+```js
+let name = "www", age = "17";
+let obj = {
+    name = "aaa";
+    objAge = this.age;
+    myFun: function () {
+        console.log(this.name + "年龄" + this.age)
+    }
+}
+
+let db = {
+    name: "bbb";
+    age: 12
+}
+
+obj.myFun.call(db)；　　　　	 // bbb年龄 99
+obj.myFun.apply(db);		// bbb年龄 99
+obj.myFun.bind(db)();		// bbb年龄 99
+```
+
+首先我们可以看出，除了 bind 需要在方法后面添加 “()” 以外，其他的都是直接调用。这是因为 bind()方法创建了一个新的函数，你必须调用显函数才会执行目标函数， 而对于 call 和 apply 是使用后马上执行。
+
+**2、参数上**
+
+```js
+let name = "www", age = "17";
+let obj = {
+	name = "aaa";
+	objAge = this.age;
+	myFun: function(fm, t) {
+		console.log( this.name + " 年龄" + this.age，"来自" + fm + "去往" + t)
+	}
+}
+
+let db={
+	name: "bbb";
+	age: 12
+}
+
+obj.myFun.call(db,'成都','上海')；　　　　 // bbb 年龄 99  来自 成都去往上海
+obj.myFun.apply(db,['成都','上海']);      // bbb年龄 99  来自 成都去往上海  
+obj.myFun.bind(db,'成都','上海')();       // bbb 年龄 99  来自 成都去往上海
+obj.myFun.bind(db,['成都','上海'])();　　 // bbb 年龄 99  来自 成都, 上海去往 undefined
+```
+
+可以看出，三个函数的第一个参数都是 this 的指向对象，区别在于第二个参数。
+
+- 对于 **`Function.prototype.call`** 来说，第一个参数就是 this 的指向对象，其余参数是直接放进去，用逗号隔开就好了。
+- 对于 **`Function.prototype.apply`** 来说，Function.apply( obj,args ) 方法能接收两个参数，obj：是 this 的指向对象。而 args：这个是数组，它将作为参数传递，也就是说 apply 的所有参数都必须放在一个数组里面传进去
+- 对于 **`Function.prototype.bind`** 来说，第一个参数就是 this 的指向对象，其余参数是直接放进去，用逗号隔开就好了。也就是说他和 call 是基本相同的，除了是返回是一个函数。
+
+> **注意** 对于 bind 来说，多次的 bind 调用，this的指向仍然是第一次的 function aa() { console.log(this) } aa.bind(1).bind(2)() // 1
+
+**二、bind / call / apply 的异同**
+
+**相同**：都能改变 this 的指向，都是挂载在 Function. prototype 上 
+
+**不同**：call 和 apply 是使用后马上执行，而 bind 是返回一个新的函数，调用显函数才会执行目标函数。并且 call 和 bind 的参数格式是一样的，第一个参数是 this 的指向对象，其余参数用逗号，apply 是参数需要放到数组中。
+
+**总结**
+
+关于修改 this 的指向的方法有三个， bind 和 call 以及 apply，他们的相同点都是 能修改 this 的指向的问题的，并且都是挂载在 Function.prototype 上的。
+
+不同点在于参数 和执行上，call 和 bind 的参数格式是一样的，第一个参数是 this 的指向对象，其余参数用逗号，而 apply 的参数需要放到数组中。在执行中，call 和 apply 是使用后马上执行，而 bind 是返回一个新的函数，调用显函数才会执行目标函数。
+
+其中需要注意的是，箭头函数的 this 是指向他所在的上下文中，并且是不能使用这三个方法修改的。
+
+
+
+`this` 就是**当前执行环境下的对象**， 取决于“函数被谁调用”，而不是定义时。
+
+1. 默认绑定（普通函数调用）
+
+   没有指定对象，this 默认是全局对象（浏览器里是 window）
+
+2. 隐式绑定（对象调用）
+
+   ```js
+   const tea = {
+     name: '奶茶A',
+     getName() {
+       console.log(this.name);
+     }
+   };
+   tea.getName(); // 奶茶A
+   ```
+
+3. 显式绑定（call/apply/bind）
+
+   ```js
+   function greet() {
+     console.log('Hi, ' + this.name);
+   }
+   
+   const shop = { name: '奶茶店B' };
+   greet.call(shop); // Hi, 奶茶店B
+   ```
+
+4. new 绑定（构造函数）
+
+```js
+function Person(name) {
+  this.name = name;
+}
+const p = new Person('小可爱');
+console.log(p.name); // 小可爱
+```
+
+**<u>隐式丢失</u>**
+
+```js
+var name = '总部';
+const shop = {
+  name: '奶茶店B',
+  getName() {
+    console.log(this.name);
+  }
+};
+setTimeout(shop.getName, 1000); // 输出：总部
+
+
+```
+
+原因： `setTimeout` 里的 回调函数是“普通调用”， 不是由 shop 直接调用的，this 丢了！
+
+✅ 解决办法：
+
+```scss
+setTimeout(() => shop.getName(), 1000);
+```
+
+**箭头函数中的 this**
+
+```dart
+const shop = {
+  name: '分店C',
+  show: () => {
+    console.log(this.name);
+  }
+};
+shop.show(); // undefined（不是分店C！）
+```
+
+💬解释： 箭头函数**不会创建**自己的 this， 它的 this 是“**外层作用域**”的 this。
+
+**事件绑定中的 this**
+
+```js
+document.querySelector('button').addEventListener('click', function() {
+  console.log(this); // <button> 元素本身
+});
+```
+
+- 普通函数绑定事件 → this 指向触发事件的 DOM 元素。
+
+#### call / apply / bind 的作用与区别
+
+| 方法  | 是否立即执行 | 参数传递方式 | 作用       |
+| ----- | ------------ | ------------ | ---------- |
+| call  | ✅ 立即执行   | 参数一个个传 | 改变 this  |
+| apply | ✅ 立即执行   | 参数数组传   | 改变 this  |
+| bind  | ❌ 不立即执行 | 参数一个个传 | 返回新函数 |
+
+
+
+
+
+## 事件管理与委托
+
+## DOM和事件
+
+### 事件流
+
+**一、什么是事件流：**
+
+事件流指的是**当 DOM 元素触发事件时，事件在 DOM 树中传播的顺序**，分为三个阶段，核心是「捕获→目标→冒泡」
+
+我们点击一个按键，那么他是如何传递的呢，是从文档顶部一层层传入到这个按键，还是从这个按键传出去呢？
+
+- 曾经在 IE 就是从里面往外（确定的逐步到不确定的），叫做事件冒泡
+- 而到了 Netscapte 就是从外面往里（不确定的逐步到确定的），叫做事件捕捉
+- 最终在 W3C 的定义规范中，就把两者都包含了~~~（哈哈哈，谁都赢了，但谁也没赢）
+
+所以现在在 DOM事件模型中会分为捕获和冒泡。一个事件发生后，会在子元素和父元素之间传播（propagation）。这种传播分成三个阶段。
+
+1. 捕获阶段：事件从window对象自上而下向目标节点传播的阶段；
+2. 目标阶段：真正的目标节点正在处理事件的阶段；
+3. 冒泡阶段：事件从目标节点自下而上向window对象传播的阶段。
+
+那么为什么会有事件捕获和事件冒泡呢 这就涉及到事件委托
+
+事件委托（也叫事件代理）的核心是**利用事件冒泡，把子元素的事件监听绑定到父元素上**，由父元素统一处理，不用给每个子元素单独绑定事件。
+
+两种事件流模型：
+
+﻿1.捕获：触发元素的事件时，该事件从该元素的祖先元素传递下去 (不太具体的节点应该更早接收到事件，而最具体的节点最后收到事件)
+
+2.冒泡：到达此元素之后，又会向其祖先元素传播上去 。
+
+DOM标准规定事件流包括3个阶段：**事件捕获、处于目标阶段和事件冒泡**。
+
+- 事件捕获：实现目标在捕获阶段不会接收事件
+
+- 处于目标阶段：事件在上发生并处理。但是事件处理会被看成是冒泡阶段的一部分
+
+- 冒泡阶段：事件又传播回文档。
+
+所有事件都要经过捕获阶段和处于目标阶段，但有些事件没有冒泡阶段。
+
+**如focus(获得输入焦点)和失去输入焦点的blur事件。**无法进行委托
+
+**事件模型**
+
+**原始事件模型**
+
+> var btn = document.getElementById('.btn');
+>
+> btn.onclick = fun;
+
+- 绑定速度快
+
+可能页面还未完全加载出来，事件可能无法正常运行
+
+- 只支持冒泡，不支持捕获
+- 同一个类型的事件只能绑定一次
+
+> var btn = document.getElementById('.btn');
+>
+> btn.onclick = fun2;
+>
+> //出错 后绑定的事件会覆盖掉之前的事件
+>
+> 删除 DOM0 级事件处理程序只要将对应事件属性置为null即可
+>
+> btn.onclick = null;
+
+**标准事件模型**
+
+- 事件捕获：从document一直向下传播到目标元素, 依次检查经过的节点是否绑定了事件监听函数，如果有则执行
+- 事件处理：到达目标元素, 触发目标元素的监听函数
+- 事件冒泡：从目标元素冒泡到document, 依次检查经过的节点是否绑定了事件监听函数，如果有则执行
+
+事件绑定监听函数的方式如下:
+
+> addEventListener(eventType, handler, useCapture)
+
+事件移除监听函数的方式如下:
+
+> removeEventListener(eventType, handler, useCapture)
+
+- eventType指定事件类型(不要加on)
+- handler是事件处理函数
+- useCapture是boolean类型用于指定是否在捕获阶段进行处理，一般设置为false与IE浏览器保持一致
+
+举个例子：
+
+> var btn = document.getElementById('.btn');
+>
+> btn.addEventListener(‘click’, showMessage, false);
+>
+> btn.removeEventListener(‘click’, showMessage, false);
+
+**特性**
+
+可以在一个DOM元素上绑定多个事件处理器，不会冲突
+
+btn.addEventListener(‘click’, showMessage1, false);
+
+btn.addEventListener(‘click’, showMessage2, false);
+
+btn.addEventListener(‘click’, showMessage3, false);
+
+第三个参数(useCapture)设置为true就在捕获过程中执行，反之在冒泡过程中执行
+
+**IE事件模型**
+
+- 事件处理：事件到达目标元素, 触发目标元素的监听函数。
+- 事件冒泡：事件从目标元素冒泡到document
+- 事件绑定监听函数的方式
+
+> attachEvent(eventType, handler)
+
+- 事件移除监听函数的方式
+
+> detachEvent(eventType, handler)
+
+举个例子：
+
+> var btn = document.getElementById('.btn');
+>
+> btn.attachEvent(‘onclick’, showMessage);
+>
+> btn.detachEvent(‘onclick’, showMessage);
+
+### 哪些事件支持冒泡
+
+可以通过 **`event.bubbles`** 属性可以判断该事件是否可以冒泡
+
+| 事件      | 是否冒泡 |
+| --------- | -------- |
+| click     | 可以     |
+| dbclick   | 可以     |
+| keydown   | 可以     |
+| keyup     | 可以     |
+| mousedown | 可以     |
+| mousemove | 可以     |
+| mouseout  | 可以     |
+| mouseover | 可以     |
+| mouseup   | 可以     |
+| scroll    | 可以     |
+
+概括来说，鼠标事件，和键盘事件，以及点击事件是支持冒泡的
+
+| 事件       | 是否冒泡 |
+| ---------- | -------- |
+| blur       | 不可以   |
+| focus      | 不可以   |
+| resize     | 不可以   |
+| about      | 不可以   |
+| mouseenter | 不可以   |
+| mouseleave | 不可以   |
+| load       | 不可以   |
+| unload     | 不可以   |
+
+而聚焦和失焦事件，加载事件，ui事件、鼠标移入移出事件是不支持的。
+
+### 阻止冒泡
+
+- 阻止冒泡行为：非 IE 浏览器 stopPropagation()，IE 浏览器 window. event. cancelBubble = true
+- 阻止默认行为：非 IE 浏览器 preventDefault()，IE 浏览器 window. event. returnValue = false
+
+### 事件代理
+
+把一个元素响应事件（click、keydown......）的函数委托到另一个元素，在冒泡阶段完成
+
+相对于直接给目标注册事件，有以下优点
+
+- **节省内存，减少dom操作**
+- **不需要给子节点注销事件**
+- **动态绑定事件**
+
+事件委托，会把一个或者一组元素的事件委托到它的父层或者更外层元素上，真正绑定事件的是外层元素，而不是目标元素。
+
+适合事件委托的事件有：click，mousedown，mouseup，keydown，keyup，keypress
+
+### 事件委托
+
+添加到页面上事件处理程序数量将直接关联到页面的整体性能
+
+对“事件处理程序过多”问题的解决方案就是事件委托
+
+**利用事件冒泡，只指定一个事件处理程序，就可以管理某一类型所有事件**
+
+使用事件委托，只需在DOM树中尽量高的一层添加一个事件处理程序
+
+> 因为事件在冒泡过程中会上传到父节点，并且父节点可以通过事件对象获取到目标节点，因此可以把子节点的监听函数定义在父节点上，由父节点的监听函数统一处理多个子元素的事件
+
+- 适合用事件委托的事件：click，mousedown，mouseup，keydown，keyup，keypress。
+- mouseover 和 mouseout 虽然也有事件冒泡，但是因为需要经常计算它们的位置，处理起来不太容易
+- 不适合的就有很多了，举个例子，mousemove，每次都要计算它的位置，不好把控， focus，blur 之类的，本身就没用冒泡的特性，自然就不用事件委托了
+
+为什么要用事件委托
+
+- 提高性能
+- 新添加的元素还会有之前的事件
+
+| 知识点              | 一句话记忆         | 奶茶店类比       |
+| ------------------- | ------------------ | ---------------- |
+| addEventListener    | 给元素“登记动作”   | 按按钮下单       |
+| removeEventListener | 取消登记           | 取消员工排班     |
+| 匿名函数解绑失败    | 不同函数地址       | 找不到临时工     |
+| 事件委托            | 父级代理处理事件   | 店长统一管理点单 |
+| e.target            | 事件真正触发的元素 | 点单的那位顾客   |
+
+## 深拷贝&浅拷贝(详情见js手撕)
+
+浅拷贝只能拷贝一层对象。
+
+深拷贝能解决无限层级对象嵌套问题。
+
+**浅拷贝**
+
+1. **Object.assign()**
+
+拷贝的是对象属性的引用，而不是对象本身。
+
+```js
+console.log(Object.assign([1, 2, 3], [4, 5])); //4,5,3  (按键进行覆盖，而不是追加)
+```
+
+assign方法可以用于处理数组，不过会把数组视为对象，比如这里会把目标数组视为是属性为0、1、2的对象，所以源数组的0、1属性的值覆盖了目标对象的值。
+
+```js
+var obj = {
+
+    age: 18,
+    nature: ['smart', 'good'],
+
+    names: {
+        name1: 'fx',
+        name2: 'xka'
+    },
+
+    love: function () {
+        console.log('fx is a great girl')
+    }
+}
+
+var newObj = Object.assign({}, obj);
+```
+
+1. **concat浅拷贝数组**
+2. **slice浅拷贝**
+3. **...扩展运算符**
+4. **for...in**
+
+**深拷贝**
+
+1.JSON.parse(JSON.stringify());
+
+- 无法解决循环利用问题
+- 无法拷贝一条特殊对象 RegExp Date Set Map 等
+- 忽略undefined、symbol和函数
+
+1. 递归实现
+2. lodash第三方库实现
+
+拷贝特殊对象，使用 Object.prototype.toString.call(obj)鉴别。
+
+| 类型   | 说明             | 类比                                   |
+| ------ | ---------------- | -------------------------------------- |
+| 浅拷贝 | 只复制第一层引用 | 拷贝了奶茶包装，但里面的珍珠还是同一碗 |
+| 深拷贝 | 连内部内容都复制 | 整杯奶茶和配料都重做一份               |
+
+## ajax
+
+![image-20251101222227559](C:\Users\31997\AppData\Roaming\Typora\typora-user-images\image-20251101222227559.png)
+
+### ajax、axios、fetch的区别
+
+**ajax**
+
+- 基于原生`XHR`开发，`XHR`本身架构不清晰。
+- 针对**MVC**编程，不符合现在前端MVVM的浪潮。
+- 多个请求之间如果有先后关系的话，就会出现**回调地狱**。（解决： **Promise**：用 “链式调用” 替代嵌套或者**async/await**：用 “同步语法” 写异步（ES7，Promise 的语法糖））
+- 配置和调用方式非常混乱，而且基于事件的异步模型不友好。
+
+**axios**
+
+- 支持`Promise`API
+- 从浏览器中创建`XMLHttpRequest`
+- 从 `node.js` 创建 `http` 请求
+- 支持请求拦截和响应拦截
+- 自动转换`JSON`数据
+- 客服端支持防止`CSRF/XSRF`
+
+**fetch**
+
+- 浏览器原生实现的请求方式，ajax的替代品
+- 基于标准 `Promise` 实现，支持`async/await`
+- `fetch`只对网络请求报错，对400，500都当做成功的请求，需要封装去处理
+- 默认不会带`cookie`，需要添加配置项
+- `fetch`没有办法原生监测请求的进度，而`XHR`可以。
+
+## 事件循环
+
+JS事件循环（Event Loop）是JavaScript实现异步编程的核心机制，核心目的是解决JS单线程运行时，无法同时处理多个任务（尤其是耗时任务）的问题，避免线程阻塞。
+
+事件循环（Event Loop）是 JavaScript 用来**管理任务执行顺序**的机制。 因为 JS 是**单线程语言**，一次只能做一件事—— 它通过“循环调度任务队列”的方式，让代码看起来能“异步执行”。
+
+
+
+![image.png](https://p6-xtjj-sign.byteimg.com/tos-cn-i-73owjymdk6/054c2b7d0e7f42199cfe89a63aebb936~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5byg5Y-v54ix:q75.awebp?rk3s=f64ab15b&x-expires=1762423022&x-signature=GhVeaK7kJRCzK9qOSX0oNIoSOhk%3D)
+
+1️⃣ **主线程（Main Thread）** 
+
+2️⃣ **任务队列（Event Queue）** 
+
+3️⃣ **事件循环（Event Loop）** 
+
+当主线程空了，就取出任务队列中的第一个任务继续执行。 这个不断取任务的过程就是——**事件循环**。
+
+## 宏任务&微任务
+
+JavaScript 执行代码的整体流程可以分为三层，优先级从高到低：
+
+1. **执行栈（同步代码）**：页面加载后，JS 引擎首先执行的就是这里的代码（比如全局的 `console.log`、变量声明、函数调用等），这部分代码会**立即、依次执行**，不属于宏 / 微任务；
+2. **微任务队列**：同步代码执行完后，引擎会先清空所有微任务（如 `Promise.then/catch`、`queueMicrotask`）；
+3. **宏任务队列**：微任务全部执行完后，引擎才会从宏任务队列取**一个**宏任务执行（如 `setTimeout`、`setInterval`），执行完这个宏任务后，又会先清空微任务队列，以此循环。
+
+事件循环中的任务分为两种类型：
+
+| 类型                 | 举例                                      | 执行时机               |
+| -------------------- | ----------------------------------------- | ---------------------- |
+| 宏任务（Macro Task） | `setTimeout`, `setInterval`, `script`整体 | 一轮事件循环执行完后   |
+| 微任务（Micro Task） | `Promise.then`, `queueMicrotask`          | 宏任务执行后、下一轮前 |
+
+```javascript
+console.log('A');
+setTimeout(() => console.log('B'), 0);
+Promise.resolve().then(() => console.log('C'));
+console.log('D');
+```
+
+执行顺序是：
+
+> A → D → C → B
+
+因为： 1️⃣ `A` 和 `D` 是主线程同步任务。 2️⃣ `Promise.then` 是微任务，会在本轮结束后执行。 3️⃣ `setTimeout` 是宏任务，要等下一轮事件循环。
+
+✅ 常见宏任务：
+
+- 整个 `script` 文件
+- `setTimeout`
+- `setInterval`
+- `I/O`
+- `UI 渲染`
+
+✅ 常见微任务：
+
+- `Promise.then`
+- `MutationObserver`
+- `queueMicrotask`
+
+## ES6新特性（重点）
+
+### let、const、var的区别
+
+- 块级作用域：
+
+  块作用域由 { }包裹，**let**和**const**具有块级作用域，**var**不存在块级作用域。
+
+  块级作用域解决了ES5中的两个问题：
+
+  - 内层变量可能覆盖外层变量
+  - 用来计数的循环变量泄露为全局变量
+
+- **变量提升：** `var`存在变量提升，`let`和`const`不存在变量提升，即变量只能在声明之后使用，否在会报错。
+
+- **给全局添加属性：** 浏览器的全局对象是`window`，`Node`的全局对象是`global`。`var`声明的变量为全局变量，并且会将该变量添加为全局对象的属性，但是`let`和`const`不会。
+
+- **重复声明：** `var`声明变量时，可以重复声明变量，后声明的同名变量会覆盖之前声明的遍历。`const`和`let`不允许重复声明变量。
+
+- **初始值设置：** 在变量声明时，`var `和`let`可以不用设置初始值。而`const`声明变量必须设置初始值。
+
+- **暂时性死区**：在使用`let`、`const`命令声明变量之前，该变量都是不可用的。这在语法上，称为暂时性死区。使用`var`声明的变量不存在暂时性死区。
+
+### 箭头函数与普通函数的区别
+
+- 箭头函数是**匿名函数**，不能作为构造函数，使用`new`关键字。
+- 箭头函数没有`arguments`
+- 箭头函数没有自己的`this`，会获取所在的上下文作为自己的`this`
+- `call()`、`applay()`、`bind()`方法不能改变箭头函数中的`this`指向
+- 箭头函数没有`prototype`
+- 箭头函数不能用作`Generator`函数，不能使用`yeild`关键字
+
+### Set、Map的区别
+
+**Set**
+
+- 创建：`  new Set([1, 1, 2, 3, 3, 4, 2])`
+- `add(value)`：添加某个值，返回Set结构本身。
+- `delete(value)`：删除某个值，返回一个布尔值，表示删除是否成功。
+- `has(value)`：返回一个布尔值，表示该值是否为Set的成员。
+- `clear()`：清除所有成员，没有返回值。
+
+**Map**
+
+- `set(key, val):` 向`Map`中添加新元素
+- `get(key):` 通过键值查找特定的数值并返回
+- `has(key): `判断`Map`对象中是否有`Key`所对应的值，有返回`true`,否则返回`false`
+- `delete(key): `通过键值从`Map`中移除对应的数据
+- `clear():` 将这个`Map`中的所有元素删除
+
+**区别**
+
+Set 是 “值的集合”（无重复值），只有键没有值；Map 是 “键值对的集合”（键可以是任意类型），键唯一、值可重复。
+
+- `Map`是一种键值对的集合，和对象不同的是，键可以是任意值
+- `Map`可以遍历，可以和各种数据格式转换
+- `Set`是类似数组的一种的数据结构，类似数组的一种集合，但在Set中没有重复的值
+
+### map和Object的区别
+
+`map`和`Object`都是用键值对来存储数据，区别如下：
+
+- **键的类型**：`Map` 的键可以是**任意数据类型**（包括对象、函数、`NaN `等），而 `Object` 的键**只能是字符串**或者 `Symbol` 类型。
+- **键值对的顺序**：`Map`中的键值对是按照插入的顺序存储的，而对象中的键值对则没有顺序。
+- **键值对的遍例**：`Map` 的键值对可以使用 `for...of` 进行遍历，而 `Object` 的键值对需要手动遍历键值对。
+- **继承关系**：`Map `没有继承关系，而 `Object` 是所有对象的基类。
+
+### map和weakMap的区别
+
+它们是 `JavaScript` 中的两种不同的键值对集合，主要区别如下：
+
+1. `map`的键可以是任意类型，`weakMap`键只能是**对象**类型。
+2. `map` 使用常规的引用来管理键和值之间的关系，因此即使键不再使用，`map` 仍然会保留该键的内存。`weakMap` 使用弱引用来管理键和值之间的关系，因此如果键不再有其他引用，垃圾回收机制可以自动回收键值对。
+
+### 说说你对Promise的理解
+
+`Promise`是异步编程的一种解决方案，将异步操作以**同步**操作的流程表达出来，避免了**地狱回调**。
+
+`Promise`的实例有三个状态:
+
+- `Pending`（初始状态）
+- `Fulfilled`（成功状态）
+- `Rejected`（失败状态）
+
+`Promise`的实例有两个过程：
+
+- `pending` -> `fulfilled` : **Resolved（已完成）**
+
+- `pending` -> `rejected`：**Rejected（已拒绝）**
+
+  注意：一旦从进行状态变成为其他状态就永远不能更改状态了，其过程是**不可逆**的。
+
+`Promise`构造函数接收一个带有`resolve`和`reject`参数的回调函数。
+
+- `resolve`的作用是将`Promise`状态从`pending`变为`fulfilled`，在异步操作成功时调用，并将异步结果返回，作为参数传递出去
+- `reject`的作用是将`Promise`状态从`pending`变为`rejected`，在异步操作失败后，将异步操作错误的结果，作为参数传递出去
+
+`Promise`的缺点：
+
+- 无法取消 `Promise`，一旦新建它就会立即执行，无法中途取消。
+- 如果不设置回调函数，`Promise`内部抛出的错误，不会反应到外部。
+- 当处于`pending`状态时，无法得知目前进展到哪一个阶段（刚刚开始还是即将完成）。
+
+### Promise方法
+
+- `promise.then()`  对应`resolve`成功的处理
+- `promise.catch()`对应`reject`失败的处理
+- `promise.all()`可以完成并行任务，将多个`Promise`实例数组，包装成一个新的`Promise`实例，返回的实例就是普通的`Promise`。有一个失败，代表该`Primise`失败。当所有的子`Promise`完成，返回值时全部值的数组
+- `promise.race()`类似`promise.all()`，区别在于有任意一个完成就算完成
+- `promise.allSettled()` 返回一个在所有给定的 `promise` 都已经 `fulfilled` 或 `rejected` 后的 `promise` ，并带有一个对象数组，每个对象表示对应的`promise` 结果。
+
+### promise.all 和 promise.allsettled 区别
+
+`Promise.all()` 和 `Promise.allSettled()` 都是用来处理多个 `Promise` 实例的方法，它们的区别在于以下几点：
+
+- **all:** 只有当所有`Promise`实例都`resolve`后，才会`resolve`返回一个由所有`Promise`返回值组成的数组。如果有一个`Promise`实例`reject`，就会立即被拒绝，并返回拒绝原因。`all`是团队的成功才算，如果有一个人失败就算失败。
+- **allSettled：** 等所有`Promise`执行完毕后，不管成功或失败， 都会吧每个`Promise`状态信息放到一个数组里面返回。
+
+### 对async/await 的理解
+
+async/await 其实**是Generator 的语法糖**，它能实现的效果都能用`then`链来实现，它是为优化`then`链而开发出来的。通过`async`关键字声明一个异步函数， `await `用于等待一个异步方法执行完成，**并且会阻塞执行**。 `async` 函数**返回的是一个 Promise 对象**，如果在函数中 `return` 一个变量，`async` 会把这个直接量通过 `Promise.resolve()` 封装成 Promise 对象。如果没有返回值，返回 `Promise.resolve(undefined)`。
+
+### async/await对比Promise的优势
+
+- 代码可读性高，`Promise`虽然摆脱了回掉地狱，但自身的链式调用会影响可读性。
+- 相对`Promise`更优雅，传值更方便。
+- 对错误处理友好，可以通过`try/catch`捕获，`Promise`的错误捕获⾮常冗余
+
+### 谈谈你对ES6的理解
+
+- 解构赋值
+- 扩展运算符
+- 箭头函数
+- 模版字符串
+- `Set`、`Map`集合
+- 新增`class`类
+- `Proxy`
+- `Promise`
+- ...
+
+## js本地储存
+
+请描述一下cookies，sessionStorage和localStorage的区别
+
+- 存储大小： cookies 一般存储量较小，通常不超过4KB;sessionStorage和 localStorage的存储量较大，一般为5MB左右。
+
+- 有效期：cookies 可以设置过期时间，在过期前一直有效;sessionStorage仅在当前会话期间有效，关闭浏览器窗口后数据即被清除；localStorage除非手动清除，否则数据会一直存储在浏览器中。
+- 数据共享：cookies会随着HTTP请求发送到服务器端，可在不同页面和不同浏览器窗口间共享；sessionStorage仅在当前窗口（或标签页）中共享，不同窗口间的数据不共享；localStorage在同一浏览器的不同窗口和标签页中均可共享数据。
+- 使用场景：cookies常用于保存用户登录信息、跟踪用户行为等；sessionStorage适用于临时保存同一窗口（或标签页）的数据，如表单数据；localStorage 可用于长期保存一些不经常变化的数据，如用户偏好设置。
+
+| 存储方式         | 特点                     | 保存时长       | 示例               |
+| ---------------- | ------------------------ | -------------- | ------------------ |
+| `cookie`         | 每次请求都会携带到服务器 | 可设置过期时间 | 登录状态、统计数据 |
+| `localStorage`   | 永久保存（除非手动删）   | 长久           | 用户主题、设置偏好 |
+| `sessionStorage` | 仅当前标签页有效         | 关闭页面即清空 | 临时表单、搜索记录 |
+
+## 大文件上传与断点续传 
+
+**大文件上传是什么？**
+
+当文件太大（比如视频或模型），一次性上传容易失败或中断。 解决办法就是 → **分片上传（Chunk Upload）** 
+
+1️⃣ 读取文件 → 切分成小块（chunks） 2️⃣ 每个分片单独上传（可以并行） 3️⃣ 服务器记录上传进度 4️⃣ 上传完毕后 → 合并文件
+
+**断点续传原理**
+
+当网络中断时，我们希望重新上传时**不要重头再来**。 解决办法：
+
+> 服务器记录每个分片的上传状态。
+
+| 应用场景   | 描述                                                |
+| ---------- | --------------------------------------------------- |
+| 大文件上传 | 视频 / AI 模型 / 设计图等大文件                     |
+| 断点续传   | 网络不稳的环境（例如移动端）                        |
+| 秒传优化   | 计算文件 hash，服务器识别已存在的文件可直接返回成功 |
+
+## 上拉加载、下拉刷新
+
+滚动监听 + 数据加载
+
+- **下拉刷新** → 更新新内容；
+
+```js
+let startY = 0;
+let moveY = 0;
+let distance = 0;
+let isRefreshing = false;
+​
+document.addEventListener('touchstart', e => {
+  startY = e.touches[0].pageY; // 记录手指初始位置
+});
+​
+document.addEventListener('touchmove', e => {
+  moveY = e.touches[0].pageY;
+  distance = moveY - startY; // 计算拉动距离
+​
+  if (distance > 50 && !isRefreshing) {
+    console.log('🔄 下拉刷新触发');
+    isRefreshing = true;
+    refresh();
+  }
+});
+​
+function refresh() {
+  setTimeout(() => {
+    console.log('✅ 刷新完成');
+    isRefreshing = false;
+  }, 1500);
+}
+
+```
+
+
+
+- **上拉加载** → 拉到底自动加载更多。
+
+
+
+## js有哪些报错，那些异常类型
+
+### 二、JS 内置标准异常类型（必掌握）
+
+这是 JS 语言原生定义的异常类型
+
+|     异常类型     |                        含义                         |                         典型触发场景                         |                           示例代码                           |
+| :--------------: | :-------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|     `Error`      |      所有异常的**基类**（父类），很少直接使用       |                      自定义异常时继承它                      | `class MyError extends Error { constructor(msg) { super(msg); } }` |
+|  `SyntaxError`   |      语法错误（解析阶段报错，代码完全不执行）       |       少分号、括号不匹配、关键字写错、JSON 格式错误等        |  `let a = ;`（缺少值）、`const b = 'hello;`（字符串未闭合）  |
+| `ReferenceError` | 引用错误（访问不存在的变量 / 给不可赋值的对象赋值） | 用未声明的变量、给`const`重新赋值、给`null/undefined`赋值属性 |     `console.log(abc);`（abc 未声明）、`const c=1; c=2;`     |
+|   `TypeError`    |           类型错误（值的类型不符合预期）            | 调用非函数的变量、访问`null/undefined`的属性、给基本类型加属性 | `let d = 123; d();`（数字不是函数）、`let e = null; e.name;` |
+|   `RangeError`   |             范围错误（值超出有效范围）              | 数组长度设为负数、递归栈溢出、`Number.toFixed()`参数超出 0-100 | `let arr = []; arr.length = -1;`、`function fn(){fn();} fn();`（栈溢出） |
+|    `URIError`    |        URI 错误（URI 处理函数参数格式非法）         |         `decodeURI`/`encodeURI`传入不完整的编码字符          |          `decodeURI('%');`（% 是不完整的 URI 编码）          |
+|   `EvalError`    |         已废弃（早期和`eval()`相关的错误）          |               现代 JS 引擎几乎不抛出，无需关注               |                              -                               |
+
+### 三、开发中高频的场景化报错（非内置，但控制台常见）
+
+这些是浏览器 / 运行环境层面的报错，虽不是 JS 原生异常类型，但日常开发中最常遇到：
+
+1. **NetworkError（网络错误）**
+
+   表现：AJAX/fetch 请求失败（404、500、跨域、网络断开等），控制台提示`NetworkError`，请求状态为`error`。
+
+   示例：请求一个不存在的接口 `fetch('https://xxx.com/none')`。
+
+   
+
+2. **CORS Error（跨域错误）**
+
+   表现：跨域请求被浏览器拦截，控制台提示`Access to fetch at 'xxx' from origin 'xxx' has been blocked by CORS policy`，即使服务器返回了响应，前端也拿不到。
+
+   （这是你之前问过的跨域相关报错，属于浏览器安全策略限制）
+
+   
+
+3. **Uncaught Error（未捕获异常）**
+
+   表现：代码抛出异常但没有`try/catch`捕获，控制台红色提示`Uncaught XXXError`，后续代码中断执行。
+
+   示例：`let f = undefined; f.toString();`（抛出 TypeError，未捕获）。
+
+   
+
+4. **Stack Overflow（栈溢出）**
+
+   表现：递归调用层数过多，超出 JS 引擎的调用栈限制，控制台提示`Uncaught RangeError: Maximum call stack size exceeded`（本质是 RangeError）。
+
+## js如何开启第二条线程
+
+### 浏览器端：Web Worker
+
+Web Worker 是浏览器提供的 API，允许创建后台线程，专门处理耗时任务，和主线程通过 “消息传递” 通信（不能直接共享数据）
+
+####  Web Worker 的关键限制
+
+- 不能访问 DOM：Worker 线程中没有`window`、`document`、`document.body`等对象，无法操作页面元素；
+- 同源策略：Worker 脚本文件必须和主线程页面同源（协议、域名、端口一致），不能加载跨域的脚本；
+- 通信是 “值拷贝”：主线程和 Worker 之间传递的对象会被序列化 / 反序列化，不是引用（大数据传递可改用`Transferable Objects`）；
+- 不能执行 alert/confirm：Worker 中没有弹窗类 API。
+
+### Node.js 端：worker_threads 模块
+
+Node.js 早期用`child_process`实现多进程，v10 + 新增`worker_threads`模块，专门支持多线程（适合 CPU 密集型任务）。
+
+## js计时为什么不准确
+
+面试官您好，关于 JS 计时（比如`setTimeout`/`setInterval`）不准确的问题，核心原因并不是 JS 本身的计时逻辑有误差，而是由 JS 的执行机制和浏览器的安全 / 性能策略决定的 ——JS 的计时本质是 “最小延迟”，而非 “精确延迟”，具体可以从这几个方面理解：
+
+第一，最根本的原因是 JS 的单线程事件循环机制。JS 是单线程的，所有代码都在主线程的执行栈里顺序执行，`setTimeout`/`setInterval`的回调函数并不是 “到了指定时间就立刻执行”：而是计时结束后，回调会被放入宏任务队列等待，只有等主线程的同步代码、微任务全部执行完，栈为空时，才会从队列里取出回调执行。如果主线程被耗时任务（比如复杂计算、大量 DOM 操作）阻塞，回调就会一直排队，实际执行时间必然比预期晚。
+
+第二，浏览器有强制的最小延迟限制。根据 HTML5 规范，`setTimeout`的最小延迟时间是 4ms，哪怕我们写`setTimeout(fn, 0)`，浏览器也会强制把延迟改成 4ms；如果`setTimeout`嵌套调用超过 5 层，最小延迟还会提升到 10ms，这是浏览器为了平衡性能和资源占用的硬性规定，无法绕过。
+
+第三，浏览器的后台节流策略会进一步影响精度。当页面处于非活跃状态（比如切到其他标签页），浏览器会对计时函数做节流处理，把`setTimeout`/`setInterval`的最小延迟提升到 1 秒，目的是节省 CPU 和电池资源，这也会让计时看起来 “不准”。
+
+另外补充一点，`setInterval`的不准确性会更明显，因为它是 “固定间隔往队列里加回调”，而非 “上一次回调执行完再开始计时”。比如预期间隔 100ms，但某次回调因主线程阻塞延迟了 200ms，此时队列里已经累积了多个回调，主线程空闲后会连续执行，导致实际间隔完全混乱。
+
+（面试加分项：补充应对方案）
+
+如果想尽可能提升计时的 “准度”，有几个常用方案：一是用递归的`setTimeout`替代`setInterval`，让上一次回调执行完再开始下一次计时，避免累积误差；二是动画场景优先用`requestAnimationFrame`，它和浏览器刷新频率同步（约 16.6ms / 帧），视觉层面更精准；三是高精度时间测量用`performance.now()`（微秒级精度）替代`Date.now()`；四是把耗时任务放到 Web Worker 里，避免阻塞主线程。
+
+
+

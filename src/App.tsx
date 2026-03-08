@@ -4,6 +4,13 @@ import { Breadcrumb, Layout, Menu, Typography, theme } from 'antd';
 import HomeHeader from './Home/Header/HomeHeader';
 import BackgroundParticles from './components/BackgroundParticles'
 import ProfileContent from './Home/content/Content';
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
+import profile from './assets/profile.jpg'
+
+import HtmlPost from './study/html/Html.mdx';
+import CssPost from './study/css/Css.mdx';
+import JavascriptPost from './study/javascript/Javascript.mdx';
+import ReactPost from './study/react/React.mdx';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Paragraph } = Typography;
@@ -24,21 +31,41 @@ const studySidebarItems: MenuProps['items'] = [
   { key: 'react', label: 'React' },
 ];
 
-const studyTitles: Record<StudyKey, string> = {
-  html: 'HTML 基础入门',
-  css: 'CSS 布局与样式',
-  javascript: 'JavaScript 核心语法',
-  react: 'React 组件化思维',
+
+
+const studyComponents : Record<StudyKey,React.ReactNode> = {
+  html: <HtmlPost />,
+  css: <CssPost />,
+  javascript: <JavascriptPost />,
+  react: <ReactPost />
 };
+
 
 const App: React.FC = () => {
   const {
     token: { borderRadiusLG },
   } = theme.useToken();
 
-  const [activePage, setActivePage] = useState<PageKey>('home');
-  const [activeStudyKey, setActiveStudyKey] = useState<StudyKey>('html');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isMenuVisible,setIsMenuVisible] = useState(false);
 
+  //const [activeStudyKey, setActiveStudyKey] = useState<StudyKey>('html');
+
+  const getActivePage = (): PageKey => {
+    if (location.pathname.startsWith('/study')) return 'study';
+    if (location.pathname.startsWith('/diary')) return 'diary';
+    return 'home';
+  };
+  
+  const getActiveStudyPage = (): StudyKey => {
+    // 根据 URL 路径来匹配侧边栏的选中状态
+    if (location.pathname.includes('/html')) return 'html';
+    if (location.pathname.includes('/css')) return 'css';
+    if (location.pathname.includes('/javascript')) return 'javascript';
+    if (location.pathname.includes('/react')) return 'react';
+    return 'html'; // 默认高亮 html
+  };
 
 
   const renderHome = () => (
@@ -77,51 +104,54 @@ const App: React.FC = () => {
         borderRadius: borderRadiusLG,
       }}
     >
-      <Sider style={{ background: 'transparent' }} width={200}>
+      <Sider style={{ background: 'transparent',overflow:'auto',position:'sticky',top:24,height: 'calc(100vh - 120px)' }} width={150} >
         <Menu
           mode="inline"
-          selectedKeys={[activeStudyKey]}
-          style={{ height: '100%', borderRight: 0, background: 'transparent' }}
+          selectedKeys={[getActiveStudyPage()]}
+          style={{ height: '100%', borderRight: 0, background: 'transparent' ,color:'#fff'}}
           items={studySidebarItems}
-          onClick={(info) => setActiveStudyKey(info.key as StudyKey)}
+          onClick={(info) => {navigate(`/study/${info.key}`)}}
         />
       </Sider>
       <Content style={{ padding: '0 24px', minHeight: 360, background: 'transparent' }}>
-        <Title level={2}>{studyTitles[activeStudyKey]}</Title>
-        <Paragraph type="secondary">2026-03-06 · 学习笔记</Paragraph>
-        <Paragraph>
-          这里以博客文章的形式展示学习内容。可以按章节拆分小标题，配合代码块、图片等，逐步完善。
-        </Paragraph>
-        <Paragraph>
-          现在只是搭好整体架构：左侧是知识点目录（HTML / CSS / JavaScript / React），右侧是对应的正文区域。
-        </Paragraph>
+        
+        <div className="markdown-body" style={{ background: 'transparent', color: '#fff' }}>
+          {studyComponents[getActiveStudyPage()]}
+        </div>
       </Content>
     </Layout>
   );
-
-  const renderContent = () => {
-    if (activePage === 'home') return renderHome();
-    if (activePage === 'diary') return renderDiary();
-    return renderStudy();
-  };
 
   return (
     <Layout style={{ minHeight: '100vh', background: 'transparent' }}>
       <BackgroundParticles />
       <Header style={{ display: 'flex', alignItems: 'center', background: 'transparent' }}>
-        <div style={{ color: '#fff', fontWeight: 600, marginRight: 32 }}>My</div>
-        <Menu
+        <div 
+        style={{ color: '#fff', fontWeight: 600, marginRight: 32 }} 
+        onClick={()=>{setIsMenuVisible(!isMenuVisible)}}
+        >
+          <img src={profile} alt="喵" style={{width:30,height:30,borderRadius:50,cursor:'pointer'}} />
+        </div>
+        {isMenuVisible && <Menu
           theme="dark"
           mode="horizontal"
-          selectedKeys={[activePage]}
+          selectedKeys={[getActivePage()]}
           items={topNavItems}
           style={{ flex: 1, minWidth: 0, background: 'transparent' }}
-          onClick={(info) => setActivePage(info.key as PageKey)}
-        />
+          onClick={(info) => {
+            if (info.key === 'home') navigate('/');
+            else navigate(`/${info.key}`);
+          }}
+        />}
+        
       </Header>
       <div style={{ background: 'transparent' }}>
         <Breadcrumb  />
-        {renderContent()}
+        <Routes>
+          <Route path="/" element={renderHome()} />
+          <Route path="/study/*" element={renderStudy()} />
+          <Route path="/diary" element={renderDiary()} />
+        </Routes>
       </div>
       <Footer style={{ textAlign: 'center', color: '#fff', background: 'transparent' }}>
         个人博客 ©{new Date().getFullYear()}

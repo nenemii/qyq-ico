@@ -2,7 +2,7 @@ import React from "react";
 import profile from '../../assets/profile.jpg';
 import style from './HomeHeader.module.css';
 
-const tags = ['重庆大学', '前端', 'cat',''];
+const tags = ['重庆大学', '前端', 'cat','泉阳泉','金铲铲之战'];
 
 const HomeHeader: React.FC = () => {
   return (
