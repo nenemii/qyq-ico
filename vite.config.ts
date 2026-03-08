@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 
 export default defineConfig({
-  base: '/qyq-icom/', // 这是你github仓库的名字
+  base: '/qyq-ico/', // 这是你github仓库的名字
   plugins: [
     { 
       enforce: 'pre', 
