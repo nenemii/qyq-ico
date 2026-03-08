@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 
 export default defineConfig({
-  base: '/qyq-ico/', // 这是你github仓库的名字
+  base: '/', // 绑定了自定义顶级域名后，这里必须改成根路径
   plugins: [
     { 
       enforce: 'pre', 
