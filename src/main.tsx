@@ -4,7 +4,7 @@ import 'antd/dist/reset.css';
 import 'github-markdown-css/github-markdown-dark.css'; 
 import 'highlight.js/styles/atom-one-dark-reasonable.css'; 
 import './index.css'; 
-import { BrowserRouter, HashRouter } from 'react-router-dom';
+import {  HashRouter } from 'react-router-dom';
 import App from './App.tsx';
 
 createRoot(document.getElementById('root')!).render(
